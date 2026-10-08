@@ -3,9 +3,16 @@
 <meta name="description" content="Análise individual do seu estudo para concursos da área farmacêutica: diagnóstico, encontro com a Prof. Pollyana Lyra, relatório de direcionamento e 30 dias na plataforma do Método APQR.">
 <meta property="og:title" content="Consultoria Individual · Prof. Pollyana Lyra">
 <meta property="og:description" content="O seu estudo, analisado por quem já passou por onde você quer chegar.">
-<meta property="og:image" content="https://pollylyra.com.br/consultoria/img/hero.webp">
+<meta property="og:image" content="https://pollylyra.com.br/consultoria/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Prof. Pollyana Lyra à mesa, entre livros de Farmácia">
+<meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
-<link rel="canonical" href="https://pollylyra.com.br/consultoria">
+<link rel="canonical" href="https://pollylyra.com.br/consultoria/">
+<meta property="og:url" content="https://pollylyra.com.br/consultoria/">
+<meta property="og:locale" content="pt_BR">
+<meta name="theme-color" content="#0F2B57">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Figtree:wght@400;500;600;700&family=Allura&display=swap">
@@ -54,7 +61,10 @@ p{margin:0}
 .btn-primary:hover{background:var(--royal);transform:translateY(-1px)}
 .btn-ghost{background:transparent;color:var(--navy);border-color:var(--navy)}
 .btn-ghost:hover{background:var(--navy);color:var(--white)}
-.btn[aria-disabled="true"]{opacity:.38;pointer-events:none;box-shadow:none}
+.btn[aria-disabled="true"]{opacity:.42;box-shadow:none;cursor:not-allowed}
+.terms.attention{animation:nudge .5s ease 2}
+.terms.attention input{border-color:var(--rose);box-shadow:0 0 0 4px rgba(185,103,159,.2)}
+@keyframes nudge{0%,100%{transform:none}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 .link{font-weight:600;color:var(--navy);text-decoration:underline;text-decoration-color:var(--rose-soft);text-decoration-thickness:2px;text-underline-offset:5px}
 .link:hover{text-decoration-color:var(--rose)}
 
@@ -148,30 +158,24 @@ p{margin:0}
 .legend-bar div{display:flex;flex-direction:column;gap:8px}
 .legend-bar i{display:block;height:10px;border-radius:5px;background:var(--c)}
 .legend-bar span{font-size:13.5px;color:var(--muted);line-height:1.3}
-.legend-facts{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:14.5px;color:var(--ink)}
-.legend-facts span::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--rose);margin-right:9px;vertical-align:middle;transform:translateY(-1px)}
 .apqr-close{margin-top:28px;font-weight:600;color:var(--navy)}
 
 /* quem conduz */
 .who .wrap{display:grid;grid-template-columns:minmax(0,4.6fr) minmax(0,6fr);gap:clamp(32px,6vw,96px);align-items:center}
 .who-photo{position:relative}
 .who-photo figure{margin:0;border-radius:var(--r-l);overflow:hidden;aspect-ratio:4/5;background:var(--mist)}
-.who-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 22%}
+.who-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 8%}
 .who-photo::after{content:"";position:absolute;inset:22px -22px -22px 22px;border:1.5px solid var(--rose-soft);border-radius:calc(var(--r-l) + 8px);z-index:-1}
 .who-text p{margin-top:18px;max-width:34em}
 .who-text p.first{font-size:clamp(18px,1.6vw,20px);color:var(--ink)}
-.creds{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 28px;margin:30px 0 0;padding:0}
-.creds div{padding:14px 0;border-top:1px solid var(--line)}
-.creds dt{font-size:13.5px;color:var(--muted)}
-.creds dd{margin:2px 0 0;font-weight:600;color:var(--navy);line-height:1.35}
-.sign{margin-top:26px;font:400 54px/1 var(--script);color:var(--rose)}
+.sign{margin-top:30px;font:400 54px/1 var(--script);color:var(--rose)}
 
 /* resultados */
 .results{background:var(--navy-deep);color:#E6EAF3;position:relative;overflow:hidden}
 .results::before{content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;border-radius:50%;border:1.5px solid rgba(231,191,218,.18)}
 .results::after{content:"";position:absolute;right:-40px;top:-40px;width:260px;height:260px;border-radius:50%;border:1.5px solid rgba(231,191,218,.12)}
 .results .wrap{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:clamp(32px,6vw,96px);align-items:center;position:relative;z-index:1}
-.big{display:flex;align-items:flex-start;gap:6px;font:600 clamp(120px,15vw,200px)/.82 var(--display);color:var(--white)}
+.big{font-variant-numeric:lining-nums;display:flex;align-items:flex-start;gap:6px;font:600 clamp(120px,15vw,200px)/.82 var(--display);color:var(--white)}
 .big small{font-size:.42em;line-height:1;color:var(--rose-soft);margin-top:.18em}
 .results h2{color:var(--white);font-size:clamp(28px,3vw,38px);margin-top:26px;max-width:15em}
 .results .sub{margin-top:14px;color:#B9C2D6;max-width:30em}
@@ -285,8 +289,8 @@ p{margin:0}
 .mbar{position:fixed;left:0;right:0;bottom:0;z-index:50;padding:12px var(--gutter) calc(12px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);display:none;align-items:center;justify-content:space-between;gap:14px;transform:translateY(110%);transition:transform .35s ease}
 .mbar.show{transform:none}
 .mbar p{font-size:13px;color:var(--muted);line-height:1.25}
-.mbar p strong{display:block;font:600 22px/1.1 var(--display);color:var(--navy)}
-.mbar .btn{min-height:48px;padding:0 20px;font-size:15px}
+.mbar p strong{display:block;font:600 22px/1.1 var(--display);color:var(--navy);font-variant-numeric:lining-nums}
+.mbar .btn{min-height:48px;padding:0 20px;font-size:15px;white-space:nowrap}
 
 /* ---------- responsivo ---------- */
 @media (max-width:980px){
@@ -314,9 +318,10 @@ p{margin:0}
   .map{position:relative;left:auto;bottom:auto;width:auto;margin:-48px var(--gutter) 0}
   .hero .actions .btn{width:100%}
   .fit-grid{grid-template-columns:minmax(0,1fr)}
-  .creds{grid-template-columns:minmax(0,1fr)}
-  .legend-bar{grid-template-columns:repeat(5,minmax(0,1fr))}
-  .legend-bar span{font-size:12px}
+    .legend-bar{grid-template-columns:minmax(0,1fr);gap:12px}
+  .legend-bar div{flex-direction:row;align-items:center;gap:12px}
+  .legend-bar i{width:44px;flex:none}
+  .legend-bar span{font-size:15px}
   .quotes{columns:auto;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin-inline:calc(var(--gutter) * -1);padding-inline:var(--gutter);padding-bottom:10px;scrollbar-width:none}
   .quotes::-webkit-scrollbar{display:none}
   .quote{flex:0 0 84%;scroll-snap-align:center;margin:0}
@@ -328,7 +333,7 @@ p{margin:0}
 @media (max-width:420px){
   .letters{gap:10px}
   .letter{padding:20px 16px}
-  .legend-bar span{font-size:11px}
+  .mbar .btn{padding:0 16px;font-size:14.5px}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important}
@@ -372,7 +377,7 @@ p{margin:0}
         <ol id="map">
           <li data-s="4" data-final="4"><span class="topic">Farmacologia</span><span class="state">Consolidado</span><span class="bar"><span></span><span></span><span></span><span></span></span></li>
           <li data-s="3" data-final="3"><span class="topic">Farmácia Hospitalar</span><span class="state">Questões e revisão</span><span class="bar"><span></span><span></span><span></span><span></span></span></li>
-          <li data-s="2" data-final="2"><span class="topic">Assistência Farmacêutica no SUS</span><span class="state">Material pronto</span><span class="bar"><span></span><span></span><span></span><span></span></span></li>
+          <li data-s="2" data-final="2"><span class="topic">Assistência Farmacêutica</span><span class="state">Material pronto</span><span class="bar"><span></span><span></span><span></span><span></span></span></li>
           <li data-s="1" data-final="1"><span class="topic">Legislação Sanitária</span><span class="state">Assimilação</span><span class="bar"><span></span><span></span><span></span><span></span></span></li>
           <li data-s="0" data-final="0"><span class="topic">Toxicologia</span><span class="state">Não iniciado</span><span class="bar"><span></span><span></span><span></span><span></span></span></li>
         </ol>
@@ -416,8 +421,7 @@ p{margin:0}
       <figure>
         <img src="img/encontro.webp" alt="Prof. Pollyana Lyra no sofá, com o notebook, pronta para um atendimento online" width="1000" height="1500" loading="lazy">
       </figure>
-      <p class="how-photo-cap" hidden></p>
-    </div>
+          </div>
     <div>
       <h2 class="h2" id="h-how">Como funciona a consultoria</h2>
       <p class="intro">Seis etapas, do pagamento ao plano em prática. Você sabe o que acontece em cada uma.</p>
@@ -455,11 +459,6 @@ p{margin:0}
         <div style="--c:var(--st-3)"><i></i><span>Questões e revisão</span></div>
         <div style="--c:var(--st-4)"><i></i><span>Consolidado</span></div>
       </div>
-      <div class="legend-facts">
-        <span>Mínimo de 20 questões por revisão</span>
-        <span>Consolida acima de 70% de acerto</span>
-        <span>Até 4 revisões por ciclo</span>
-      </div>
     </div>
     <p class="apqr-close">Na consultoria, você recebe 30 dias de plataforma com o seu edital já cadastrado.</p>
   </div>
@@ -475,15 +474,9 @@ p{margin:0}
     </div>
     <div class="who-text">
       <h2 class="h2" id="h-who">Quem vai analisar o seu estudo</h2>
-      <p class="first">Sou Pollyana Lyra, farmacêutica e professora. Sou Farmacêutica do Corpo de Bombeiros Militar do Distrito Federal e Analista da Fundação Hemocentro de Brasília.</p>
+      <p class="first">Sou Pollyana Lyra, farmacêutica e professora. Atuo como farmacêutica no Corpo de Bombeiros Militar do Distrito Federal e como analista na Fundação Hemocentro de Brasília.</p>
       <p>Desde 2015 produzo materiais para concursos da área e estruturei um programa de mentoria com metodologia própria, que já ajudou centenas de alunos a mudar a forma como estudam.</p>
       <p>Eu sei o que é estudar com rotina apertada e insegurança. Foi esse caminho que me trouxe até aqui, e é ele que eu quero encurtar para você.</p>
-      <dl class="creds">
-        <div><dt>Corpo de Bombeiros Militar do DF</dt><dd>Farmacêutica</dd></div>
-        <div><dt>Fundação Hemocentro de Brasília</dt><dd>Analista</dd></div>
-        <div><dt>Materiais para concursos</dt><dd>Desde 2015</dd></div>
-        <div><dt>Instagram @prof.pollyanalyra</dt><dd>54 mil seguidores</dd></div>
-      </dl>
       <p class="sign" aria-label="Assinatura: Polly">Polly</p>
     </div>
   </div>
@@ -592,7 +585,7 @@ p{margin:0}
       <div class="bonus">
         <div class="bonus-ic" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B88B1C" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="M8.5 13.8L7 22l5-3 5 3-1.5-8.2"/></svg></div>
         <div>
-          <h3>Quem faz a parte dele segue com vantagem</h3>
+          <h3>Quem faz a sua parte segue com vantagem</h3>
           <p>Durante os 30 dias de plataforma, o seu rendimento é acompanhado automaticamente. Quem cumpre as metas de estudo recebe um crédito de desconto para seguir na mentoria ou na plataforma.</p>
         </div>
       </div>
@@ -741,10 +734,20 @@ const CONFIG = {
   const aceite = $("#aceite"), hint = $("#pay-hint");
   const syncPay = () => {
     const ok = aceite.checked;
-    [pix, card].forEach(b => { b.setAttribute("aria-disabled", ok ? "false" : "true"); b.tabIndex = ok ? 0 : -1; });
+    [pix, card].forEach(b => b.setAttribute("aria-disabled", ok ? "false" : "true"));
     hint.textContent = ok ? "" : "Marque o aceite do termo para liberar o pagamento.";
   };
-  aceite.addEventListener("change", syncPay); syncPay();
+  aceite.addEventListener("change", () => { syncPay(); termsBox.classList.remove("attention"); });
+  syncPay();
+  const termsBox = $(".terms");
+  [pix, card].forEach(b => b.addEventListener("click", (ev) => {
+    if (aceite.checked) return;
+    ev.preventDefault(); ev.stopImmediatePropagation();
+    hint.textContent = "Para continuar, marque o aceite do Termo de Adesão logo acima.";
+    termsBox.classList.remove("attention"); void termsBox.offsetWidth; termsBox.classList.add("attention");
+    aceite.focus({ preventScroll: true });
+    termsBox.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+  }));
   pix.addEventListener("click", () => track("checkout", {value:627.30, payment:"pix"}));
   card.addEventListener("click", () => track("checkout", {value:697, payment:"cartao"}));
 

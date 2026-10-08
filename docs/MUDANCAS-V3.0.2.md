@@ -25,3 +25,13 @@ Depois de editar: `npm run build:web`, subir a versão no `VERSION` e publicar n
 
 ## Testes
 `server/test/pagina-consultoria.test.js` (redirecionamento, política de segurança, imagens, app intacto). Suíte completa: 182 testes ok.
+
+---
+
+# APQR v3.0.3 — ajustes na página /consultoria
+
+- Retiradas as regras do método do bloco de cores (20 questões, 70%, 4 revisões) e a lista de credenciais (Farmacêutica, Analista, Desde 2015, 54 mil seguidores).
+- Botões de pagamento: tocar sem o aceite do termo leva até o aceite e explica o que falta.
+- Legenda de cores em lista no celular; foto de "Quem conduz" sem cortar a cabeça; botão da barra fixa sem quebrar linha.
+- Imagem de compartilhamento em JPG 1200×630 (WhatsApp/Instagram); endereço canônico com barra final.
+- Numerais de preço alinhados; texto neutro no bônus ("Quem faz a sua parte").
