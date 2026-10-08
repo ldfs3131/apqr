@@ -16,6 +16,45 @@ import meRoutes from './routes/me.js';
 import fileRoutes from './routes/files.js';
 import { financeRouter, webhookRouter } from './routes/finance.js';
 
+/**
+ * Páginas de venda estáticas da Prof. Pollyana (ex.: /consultoria), servidas do web/dist/<pasta>.
+ * Ficam fora do app React: HTML próprio, sem login e sem acesso à API.
+ * Política de segurança própria: liberam Google Fonts, o script da própria página e
+ * Meta Pixel / Google Analytics (carregados só quando os IDs estiverem preenchidos na página).
+ */
+export const LANDING_PAGES = ['consultoria'];
+export const LANDING_CSP =
+  "default-src 'self'; " +
+  "img-src 'self' data: https://www.facebook.com https://*.google-analytics.com https://*.googletagmanager.com; " +
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+  "font-src 'self' https://fonts.gstatic.com; " +
+  "script-src 'self' 'unsafe-inline' https://connect.facebook.net https://www.googletagmanager.com; " +
+  "connect-src 'self' https://www.facebook.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; " +
+  "frame-src 'none'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'";
+
+function mountLandingPages(app, dist) {
+  for (const name of LANDING_PAGES) {
+    const dir = path.join(dist, name);
+    const index = path.join(dir, 'index.html');
+    if (!fs.existsSync(index)) continue;
+    // Sem a barra final, as imagens relativas (img/...) quebrariam.
+    app.get(new RegExp(`^/${name}$`), (req, res) => {
+      const q = req.originalUrl.indexOf('?');
+      res.redirect(301, `/${name}/${q >= 0 ? req.originalUrl.slice(q) : ''}`);
+    });
+    app.use(`/${name}`, (_req, res, next) => {
+      res.setHeader('Content-Security-Policy', LANDING_CSP);
+      res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+      next();
+    });
+    app.use(`/${name}/img`, express.static(path.join(dir, 'img'), { maxAge: '30d' }), (_req, res) => res.status(404).end());
+    app.get(new RegExp(`^/${name}/.*`), (_req, res) => {
+      res.setHeader('Cache-Control', 'no-cache');
+      res.sendFile(index);
+    });
+  }
+}
+
 export function createApp() {
   const app = express();
   app.disable('x-powered-by');
@@ -76,6 +115,7 @@ export function createApp() {
     // O service worker e o manifesto precisam revalidar sempre (senão uma versão antiga do app fica presa no aparelho).
     app.get(['/sw.js', '/manifest.webmanifest', '/offline.html'], (_req, res, next) => { res.setHeader('Cache-Control', 'no-cache'); next(); });
     app.use('/assets', express.static(path.join(dist, 'assets'), { immutable: true, maxAge: '365d' }));
+    mountLandingPages(app, dist);
     app.use(express.static(dist, { index: false, maxAge: '1h' }));
     app.get(/^(?!\/api).*/, (_req, res) => res.sendFile(path.join(dist, 'index.html')));
   }

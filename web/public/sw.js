@@ -24,6 +24,8 @@ self.addEventListener('fetch', (e) => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin || url.pathname.startsWith('/api/')) return;
+  // Páginas de venda (ex.: /consultoria) não fazem parte do app: nada de cache nem de "tela offline" do APQR.
+  if (/^\/consultoria(\/|$)/.test(url.pathname)) return;
 
   if (req.mode === 'navigate') {
     e.respondWith((async () => {

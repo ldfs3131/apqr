@@ -1,0 +1,805 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Consultoria Individual Pollyana Lyra</title>
+<meta name="description" content="Análise individual do seu estudo para concursos da área farmacêutica: diagnóstico, encontro com a Prof. Pollyana Lyra, relatório de direcionamento e 30 dias na plataforma do Método APQR.">
+<meta property="og:title" content="Consultoria Individual · Prof. Pollyana Lyra">
+<meta property="og:description" content="O seu estudo, analisado por quem já passou por onde você quer chegar.">
+<meta property="og:image" content="https://pollylyra.com.br/consultoria/img/hero.webp">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://pollylyra.com.br/consultoria">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Figtree:wght@400;500;600;700&family=Allura&display=swap">
+<link rel="preload" as="image" href="img/hero.webp" fetchpriority="high">
+
+<style>
+/* Layout: consultório de alto padrão. Coluna editorial assimétrica, foto como protagonista,
+   o "mapa do edital" do Método APQR como único elemento animado da página. */
+:root{
+  --paper:#FBFAFC;        /* branco levemente rosado */
+  --mist:#F4EDF3;         /* rosé névoa, fundos de apoio */
+  --ink:#172036;          /* texto */
+  --muted:#596178;        /* texto secundário */
+  --navy:#0F2B57;         /* títulos, botões */
+  --navy-deep:#0A1F42;    /* faixa escura */
+  --royal:#1B4C9B;        /* azul do logo, links */
+  --rose:#B9679F;         /* rosé com contraste para texto */
+  --rose-soft:#E7BFDA;    /* rosé do logo, detalhes */
+  --gold:#D9A92E;         /* sublinhado dourado do logo, uso mínimo */
+  --line:#E4DCE5;         /* fios */
+  --white:#FFFFFF;
+  --st-0:#C9564D; --st-1:#E89A57; --st-2:#E2C04A; --st-3:#4F9D76; --st-4:#2C6A4D;
+  --display:"Cormorant","Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --body:"Figtree","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
+  --script:"Allura","Brush Script MT",cursive;
+  --gutter:clamp(18px,4.5vw,56px);
+  --max:1180px;
+  --r-s:10px; --r-m:18px; --r-l:28px;
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17.5px/1.65 var(--body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+img{max-width:100%;height:auto;display:block}
+a{color:var(--royal)}
+h1,h2,h3{font-family:var(--display);color:var(--navy);font-weight:600;line-height:1.08;letter-spacing:-.01em;margin:0;text-wrap:balance}
+p{margin:0}
+:focus-visible{outline:3px solid var(--royal);outline-offset:3px;border-radius:6px}
+.wrap{width:100%;max-width:var(--max);margin-inline:auto;padding-inline:var(--gutter)}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- botões ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.6em;min-height:54px;padding:0 28px;border-radius:999px;font:600 16.5px/1 var(--body);text-decoration:none;border:1.5px solid transparent;cursor:pointer;transition:background .2s,color .2s,border-color .2s,transform .2s,box-shadow .2s}
+.btn-primary{background:var(--navy);color:var(--white);box-shadow:0 10px 24px -14px rgba(15,43,87,.7)}
+.btn-primary:hover{background:var(--royal);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--navy);border-color:var(--navy)}
+.btn-ghost:hover{background:var(--navy);color:var(--white)}
+.btn[aria-disabled="true"]{opacity:.38;pointer-events:none;box-shadow:none}
+.link{font-weight:600;color:var(--navy);text-decoration:underline;text-decoration-color:var(--rose-soft);text-decoration-thickness:2px;text-underline-offset:5px}
+.link:hover{text-decoration-color:var(--rose)}
+
+/* ---------- cabeçalho ---------- */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:rgba(251,250,252,.86);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid transparent;transition:border-color .3s}
+.top.scrolled{border-bottom-color:var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:72px}
+.top img{width:148px}
+.top .btn{min-height:42px;padding:0 20px;font-size:14.5px}
+
+/* ---------- hero ---------- */
+.hero{padding-block:clamp(36px,6vw,84px) clamp(56px,7vw,104px)}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,5.6fr) minmax(0,6fr);gap:clamp(32px,5vw,72px);align-items:center}
+.kicker{color:var(--rose);font-weight:600;font-size:15.5px;margin-bottom:22px;display:flex;align-items:center;gap:12px}
+.kicker::before{content:"";width:34px;height:1.5px;background:var(--rose-soft)}
+.hero h1{font-size:clamp(42px,5vw,68px);font-weight:600;line-height:1.02}
+.hero h1 em{font-style:italic;font-weight:500;color:var(--rose)}
+.hero .lead{margin-top:26px;font-size:clamp(17.5px,1.5vw,19.5px);color:var(--muted);max-width:33em}
+.hero .actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 28px;margin-top:34px}
+.hero .note{margin-top:22px;font-size:14.5px;color:var(--muted);display:flex;align-items:center;gap:10px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--st-3);box-shadow:0 0 0 4px rgba(79,157,118,.16);flex:none}
+
+.hero-visual{position:relative;padding-bottom:150px}
+.hero-photo{border-radius:var(--r-l);overflow:hidden;aspect-ratio:3/2;background:var(--mist);box-shadow:0 40px 80px -48px rgba(15,43,87,.55)}
+.hero-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 30%}
+.hero-visual::before{content:"";position:absolute;inset:-22px -22px 128px 22px;border:1.5px solid var(--rose-soft);border-radius:calc(var(--r-l) + 10px);z-index:-1}
+
+/* mapa do edital (APQR) */
+.map{position:absolute;left:clamp(-40px,-3vw,-16px);bottom:0;width:min(340px,78%);background:var(--white);border-radius:var(--r-m);padding:18px 20px 16px;box-shadow:0 30px 60px -28px rgba(15,43,87,.45),0 0 0 1px rgba(15,43,87,.05)}
+.map-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:12px}
+.map-title{font:600 14.5px/1.2 var(--body);color:var(--navy)}
+.map-tag{font-size:11.5px;color:var(--muted)}
+.map ol{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.map li{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center}
+.map .topic{font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.map .state{font-size:11.5px;font-weight:600;color:var(--c);text-align:right;transition:color .35s}
+.map .bar{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
+.map .bar span{height:6px;border-radius:3px;background:#EEE9EF;transition:background-color .35s}
+.map li[data-s="1"] .bar span:nth-child(-n+1),
+.map li[data-s="2"] .bar span:nth-child(-n+2),
+.map li[data-s="3"] .bar span:nth-child(-n+3),
+.map li[data-s="4"] .bar span{background:var(--c)}
+.map li[data-s="0"] .bar span:first-child{background:var(--c)}
+.map li[data-s="0"]{--c:var(--st-0)} .map li[data-s="1"]{--c:var(--st-1)} .map li[data-s="2"]{--c:var(--st-2)} .map li[data-s="3"]{--c:var(--st-3)} .map li[data-s="4"]{--c:var(--st-4)}
+.map li[data-s="2"] .state{color:#9C7B12}
+.map-foot{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted)}
+
+/* ---------- seções ---------- */
+.sec{padding-block:clamp(72px,9vw,128px)}
+.sec-mist{background:var(--mist)}
+.h2{font-size:clamp(34px,4.2vw,56px)}
+.intro{color:var(--muted);font-size:clamp(17px,1.4vw,19px);max-width:36em;margin-top:18px}
+
+/* dor */
+.pain .wrap{display:grid;grid-template-columns:minmax(0,4.4fr) minmax(0,6fr);gap:clamp(32px,6vw,96px);align-items:start}
+.pain-head{position:sticky;top:120px}
+.pain-list{display:grid}
+.pain-item{padding-block:30px;border-top:1px solid var(--line)}
+.pain-item:last-child{border-bottom:1px solid var(--line)}
+.pain-item h3{font-size:clamp(26px,2.6vw,34px);margin-bottom:10px}
+.pain-item p{color:var(--muted);max-width:34em}
+.pain-close{margin-top:44px;font-family:var(--display);font-size:clamp(26px,2.8vw,36px);line-height:1.2;color:var(--navy)}
+.pain-close strong{font-weight:600;background:linear-gradient(transparent 62%,rgba(231,191,218,.75) 62%)}
+
+/* como funciona */
+.how .wrap{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6.2fr);gap:clamp(32px,6vw,96px);align-items:start}
+.how-photo{position:sticky;top:110px}
+.how-photo figure{margin:0;border-radius:var(--r-l);overflow:hidden;aspect-ratio:4/5;background:var(--mist)}
+.how-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 40%}
+.how-photo figcaption{margin-top:14px;font-size:14px;color:var(--muted)}
+.steps{list-style:none;margin:40px 0 0;padding:0;position:relative}
+.steps::before{content:"";position:absolute;left:27px;top:28px;bottom:28px;width:1.5px;background:linear-gradient(var(--rose-soft),var(--line))}
+.step{display:grid;grid-template-columns:56px minmax(0,1fr);gap:22px;padding-bottom:34px;position:relative}
+.step:last-child{padding-bottom:0}
+.num{width:56px;height:56px;border-radius:50%;background:var(--paper);border:1.5px solid var(--rose-soft);display:grid;place-items:center;font:600 26px/1 var(--display);color:var(--navy);position:relative;z-index:1}
+.step:last-child .num{background:var(--navy);border-color:var(--navy);color:var(--white)}
+.step h3{font-family:var(--body);font-size:19px;font-weight:700;letter-spacing:0;line-height:1.3;padding-top:6px}
+.step p{color:var(--muted);margin-top:6px;max-width:32em}
+
+/* método APQR */
+.apqr-top{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,5vw,80px);align-items:end}
+.letters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(12px,2vw,24px);margin-top:clamp(40px,5vw,64px)}
+.letter{background:var(--white);border-radius:var(--r-m);padding:26px 22px 24px;display:flex;flex-direction:column;gap:10px;border:1px solid rgba(15,43,87,.06)}
+.letter b{font:600 clamp(64px,7vw,96px)/.85 var(--display);color:var(--navy)}
+.letter .swatch{height:5px;border-radius:3px;background:var(--c);width:44px}
+.letter h3{font-family:var(--body);font-size:18px;font-weight:700;letter-spacing:0;line-height:1.25}
+.letter p{font-size:15.5px;color:var(--muted)}
+.legend{margin-top:clamp(28px,4vw,44px);background:var(--white);border-radius:var(--r-m);padding:22px 24px;border:1px solid rgba(15,43,87,.06)}
+.legend-title{font-weight:600;color:var(--navy);font-size:15.5px;margin-bottom:14px}
+.legend-bar{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+.legend-bar div{display:flex;flex-direction:column;gap:8px}
+.legend-bar i{display:block;height:10px;border-radius:5px;background:var(--c)}
+.legend-bar span{font-size:13.5px;color:var(--muted);line-height:1.3}
+.legend-facts{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:14.5px;color:var(--ink)}
+.legend-facts span::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--rose);margin-right:9px;vertical-align:middle;transform:translateY(-1px)}
+.apqr-close{margin-top:28px;font-weight:600;color:var(--navy)}
+
+/* quem conduz */
+.who .wrap{display:grid;grid-template-columns:minmax(0,4.6fr) minmax(0,6fr);gap:clamp(32px,6vw,96px);align-items:center}
+.who-photo{position:relative}
+.who-photo figure{margin:0;border-radius:var(--r-l);overflow:hidden;aspect-ratio:4/5;background:var(--mist)}
+.who-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 22%}
+.who-photo::after{content:"";position:absolute;inset:22px -22px -22px 22px;border:1.5px solid var(--rose-soft);border-radius:calc(var(--r-l) + 8px);z-index:-1}
+.who-text p{margin-top:18px;max-width:34em}
+.who-text p.first{font-size:clamp(18px,1.6vw,20px);color:var(--ink)}
+.creds{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 28px;margin:30px 0 0;padding:0}
+.creds div{padding:14px 0;border-top:1px solid var(--line)}
+.creds dt{font-size:13.5px;color:var(--muted)}
+.creds dd{margin:2px 0 0;font-weight:600;color:var(--navy);line-height:1.35}
+.sign{margin-top:26px;font:400 54px/1 var(--script);color:var(--rose)}
+
+/* resultados */
+.results{background:var(--navy-deep);color:#E6EAF3;position:relative;overflow:hidden}
+.results::before{content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;border-radius:50%;border:1.5px solid rgba(231,191,218,.18)}
+.results::after{content:"";position:absolute;right:-40px;top:-40px;width:260px;height:260px;border-radius:50%;border:1.5px solid rgba(231,191,218,.12)}
+.results .wrap{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:clamp(32px,6vw,96px);align-items:center;position:relative;z-index:1}
+.big{display:flex;align-items:flex-start;gap:6px;font:600 clamp(120px,15vw,200px)/.82 var(--display);color:var(--white)}
+.big small{font-size:.42em;line-height:1;color:var(--rose-soft);margin-top:.18em}
+.results h2{color:var(--white);font-size:clamp(28px,3vw,38px);margin-top:26px;max-width:15em}
+.results .sub{margin-top:14px;color:#B9C2D6;max-width:30em}
+.results-list{display:grid;gap:0}
+.results-list div{padding:20px 0;border-top:1px solid rgba(255,255,255,.12)}
+.results-list div:last-child{border-bottom:1px solid rgba(255,255,255,.12)}
+.results-list strong{display:block;color:var(--white);font:600 24px/1.2 var(--display);margin-bottom:4px}
+.results-list span{font-size:15.5px;color:#B9C2D6}
+.results .fine{margin-top:22px;font-size:13px;color:#8F9AB4}
+
+/* depoimentos */
+.quotes-head{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap}
+.quotes{columns:3 320px;column-gap:22px;margin-top:clamp(36px,4vw,56px)}
+.quote{break-inside:avoid;margin:0 0 22px;background:var(--white);border-radius:var(--r-m);padding:30px 28px 24px;border:1px solid rgba(15,43,87,.06);position:relative}
+.quote::before{content:"\201C";position:absolute;top:6px;left:22px;font:600 80px/1 var(--display);color:var(--rose-soft)}
+.quote blockquote{margin:22px 0 0;font-size:16.5px;line-height:1.62;color:var(--ink)}
+.quote figcaption{display:flex;align-items:center;gap:12px;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+.mono{width:40px;height:40px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--mist);color:var(--navy);font:600 17px/1 var(--display);letter-spacing:.02em}
+.quote cite{font-style:normal;font-size:14px;line-height:1.4;color:var(--muted)}
+.quote cite b{display:block;color:var(--navy);font-size:14.5px}
+.quote.featured{background:var(--navy);border-color:var(--navy)}
+.quote.featured blockquote{color:#F1F3F8;font-family:var(--display);font-size:22px;line-height:1.4;font-weight:500}
+.quote.featured::before{color:rgba(231,191,218,.45)}
+.quote.featured figcaption{border-top-color:rgba(255,255,255,.14)}
+.quote.featured .mono{background:rgba(255,255,255,.1);color:var(--white)}
+.quote.featured cite{color:#B9C2D6}
+.quote.featured cite b{color:var(--white)}
+.quotes-note{margin-top:8px;font-size:13.5px;color:var(--muted)}
+
+/* para quem */
+.fit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(18px,3vw,32px);margin-top:clamp(36px,4vw,52px)}
+.fit{border-radius:var(--r-m);padding:clamp(26px,3vw,38px)}
+.fit.yes{background:var(--white);border:1px solid rgba(15,43,87,.08);box-shadow:0 24px 50px -36px rgba(15,43,87,.35)}
+.fit.no{background:transparent;border:1px dashed #CFC4D0}
+.fit h3{font-family:var(--body);font-size:19px;font-weight:700;letter-spacing:0;margin-bottom:18px}
+.fit ul{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.fit li{display:grid;grid-template-columns:24px minmax(0,1fr);gap:12px;align-items:start}
+.fit li svg{margin-top:3px}
+.fit.no li{color:var(--muted)}
+
+/* investimento */
+.offer .wrap{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,5.6fr);gap:clamp(32px,6vw,88px);align-items:start}
+.offer-side .intro{margin-bottom:30px}
+.next{list-style:none;margin:0;padding:0;display:grid;gap:16px}
+.next li{display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px}
+.next li span{width:30px;height:30px;border-radius:50%;background:var(--white);border:1.5px solid var(--rose-soft);display:grid;place-items:center;font:600 16px/1 var(--display);color:var(--navy)}
+.bonus{margin-top:34px;background:var(--white);border-radius:var(--r-m);padding:24px 24px 22px;border:1px solid rgba(15,43,87,.06);display:grid;grid-template-columns:44px minmax(0,1fr);gap:16px}
+.bonus-ic{width:44px;height:44px;border-radius:12px;background:rgba(217,169,46,.14);display:grid;place-items:center}
+.bonus h3{font-family:var(--body);font-size:17.5px;font-weight:700;letter-spacing:0;line-height:1.3}
+.bonus p{font-size:15.5px;color:var(--muted);margin-top:6px}
+
+.card{background:var(--white);border-radius:var(--r-l);box-shadow:0 50px 90px -50px rgba(15,43,87,.55),0 0 0 1px rgba(15,43,87,.06);overflow:hidden;position:relative}
+.card-top{background:var(--navy);color:var(--white);padding:26px clamp(24px,3vw,36px) 24px;position:relative;overflow:hidden}
+.card-top::after{content:"";position:absolute;right:-60px;top:-80px;width:220px;height:220px;border-radius:50%;border:1.5px solid rgba(231,191,218,.25)}
+.card-top small{display:block;color:var(--rose-soft);font-size:14px;font-weight:600}
+.card-top h3{color:var(--white);font-size:clamp(28px,2.8vw,34px);margin-top:6px}
+.card-body{padding:clamp(24px,3vw,36px)}
+.incl{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.incl li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:12px;align-items:start;font-size:16px}
+.incl li svg{margin-top:3px}
+.price{margin-top:28px;padding-top:24px;border-top:1px solid var(--line)}
+.price-pix-label{font-size:14px;color:var(--st-4);font-weight:600}
+.price-main{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:4px}
+.price-main strong{font:600 clamp(52px,5.4vw,66px)/1 var(--display);color:var(--navy);font-variant-numeric:lining-nums}
+.price-main strong sup{font-size:.42em;vertical-align:.95em;margin-right:4px}
+.price-main span{font-size:16px;color:var(--muted)}
+.price-alt{margin-top:8px;font-size:15.5px;color:var(--ink)}
+.price-alt s{color:var(--muted);text-decoration-thickness:1px}
+.terms{display:flex;gap:12px;align-items:flex-start;margin-top:24px;font-size:14.5px;color:var(--muted);cursor:pointer}
+.terms input{appearance:none;-webkit-appearance:none;width:22px;height:22px;flex:none;border:1.5px solid #B9B2C2;border-radius:6px;margin:1px 0 0;display:grid;place-items:center;cursor:pointer;background:var(--white);transition:background .2s,border-color .2s}
+.terms input:checked{background:var(--navy);border-color:var(--navy)}
+.terms input:checked::after{content:"";width:6px;height:11px;border:solid var(--white);border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.pay{display:grid;gap:12px;margin-top:18px}
+.pay .btn{width:100%}
+.pay-hint{font-size:13.5px;color:var(--rose);min-height:1.3em;margin-top:8px;text-align:center}
+.after{margin-top:18px;font-size:14px;color:var(--muted);text-align:center}
+.member{margin-top:16px;padding-top:16px;border-top:1px solid var(--line);font-size:14.5px;text-align:center;color:var(--ink)}
+
+/* faq */
+.faq .wrap{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,6.6fr);gap:clamp(32px,6vw,96px);align-items:start}
+.faq-list details{border-top:1px solid var(--line)}
+.faq-list details:last-child{border-bottom:1px solid var(--line)}
+.faq-list summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:22px 0;font-weight:600;font-size:17.5px;color:var(--navy)}
+.faq-list summary::-webkit-details-marker{display:none}
+.faq-list summary i{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--rose-soft);flex:none;position:relative;transition:transform .25s,background .25s}
+.faq-list summary i::before,.faq-list summary i::after{content:"";position:absolute;left:50%;top:50%;width:11px;height:1.5px;background:var(--navy);transform:translate(-50%,-50%)}
+.faq-list summary i::after{transform:translate(-50%,-50%) rotate(90deg);transition:transform .25s}
+.faq-list details[open] summary i{background:var(--mist)}
+.faq-list details[open] summary i::after{transform:translate(-50%,-50%) rotate(0)}
+.faq-list details p{padding:0 48px 24px 0;color:var(--muted);max-width:40em}
+
+/* fechamento */
+.close .wrap{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,4.4fr);gap:clamp(32px,6vw,96px);align-items:center}
+.close h2{font-size:clamp(38px,4.8vw,64px)}
+.close h2 em{font-style:italic;font-weight:500;color:var(--rose)}
+.close .actions{display:flex;flex-wrap:wrap;gap:14px 28px;align-items:center;margin-top:34px}
+.close figure{margin:0;border-radius:var(--r-l);overflow:hidden;aspect-ratio:4/5;background:var(--mist)}
+.close figure img{width:100%;height:100%;object-fit:cover;object-position:50% 25%}
+
+/* rodapé */
+.foot{border-top:1px solid var(--line);padding-block:44px 120px;font-size:14px;color:var(--muted)}
+.foot .wrap{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:28px;align-items:center}
+.foot nav{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:16px}
+.foot nav a{color:var(--navy);text-decoration:none;font-weight:500}
+.foot nav a:hover{text-decoration:underline}
+.foot .legal{margin-top:16px}
+.made{display:flex;align-items:center;gap:12px;font-size:13px}
+.made img{width:86px}
+
+/* barra fixa (celular) */
+.mbar{position:fixed;left:0;right:0;bottom:0;z-index:50;padding:12px var(--gutter) calc(12px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);display:none;align-items:center;justify-content:space-between;gap:14px;transform:translateY(110%);transition:transform .35s ease}
+.mbar.show{transform:none}
+.mbar p{font-size:13px;color:var(--muted);line-height:1.25}
+.mbar p strong{display:block;font:600 22px/1.1 var(--display);color:var(--navy)}
+.mbar .btn{min-height:48px;padding:0 20px;font-size:15px}
+
+/* ---------- responsivo ---------- */
+@media (max-width:980px){
+  .hero .wrap,.pain .wrap,.how .wrap,.who .wrap,.results .wrap,.offer .wrap,.faq .wrap,.close .wrap,.apqr-top{grid-template-columns:minmax(0,1fr)}
+  .pain-head,.how-photo{position:static}
+  .hero-visual{max-width:640px}
+  .letters{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .how-photo figure{aspect-ratio:4/3}
+  .who-photo{max-width:440px}
+  .close figure{max-width:420px;aspect-ratio:1/1}
+  .close .wrap > figure{order:-1}
+}
+@media (max-width:720px){
+  body{font-size:17px}
+  .top .wrap{height:62px}
+  .top img{width:124px}
+  .top .btn{display:none}
+  .kicker::before{display:none}
+  .hero{padding-top:28px}
+  .hero .wrap{gap:28px}
+  .hero-visual{padding-bottom:0;margin-inline:calc(var(--gutter) * -1);max-width:none;margin-top:8px}
+  .hero-visual::before{display:none}
+  .hero-photo{border-radius:0;aspect-ratio:4/3}
+  .hero-photo img{object-position:50% 22%}
+  .map{position:relative;left:auto;bottom:auto;width:auto;margin:-48px var(--gutter) 0}
+  .hero .actions .btn{width:100%}
+  .fit-grid{grid-template-columns:minmax(0,1fr)}
+  .creds{grid-template-columns:minmax(0,1fr)}
+  .legend-bar{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .legend-bar span{font-size:12px}
+  .quotes{columns:auto;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin-inline:calc(var(--gutter) * -1);padding-inline:var(--gutter);padding-bottom:10px;scrollbar-width:none}
+  .quotes::-webkit-scrollbar{display:none}
+  .quote{flex:0 0 84%;scroll-snap-align:center;margin:0}
+  .who-photo::after{inset:14px -10px -14px 14px}
+  .faq-list details p{padding-right:0}
+  .mbar{display:flex}
+  .foot .wrap{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:420px){
+  .letters{gap:10px}
+  .letter{padding:20px 16px}
+  .legend-bar span{font-size:11px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important}
+}
+</style>
+</head><body>
+
+<!-- ====== CABEÇALHO ====== -->
+<header class="top" id="top">
+  <div class="wrap">
+    <a href="#inicio" aria-label="Prof. Pollyana Lyra, início"><img src="img/logo-pollyana.png" alt="Pollyana Lyra" width="560" height="192"></a>
+    <a class="btn btn-primary" href="#investimento" data-ev="cta_header">Quero minha consultoria</a>
+  </div>
+</header>
+
+<main id="inicio">
+
+<!-- ====== HERO ====== -->
+<section class="hero" aria-labelledby="h-hero">
+  <div class="wrap">
+    <div class="hero-text">
+      <p class="kicker">Consultoria individual para concursos de Farmácia</p>
+      <h1 id="h-hero">O seu estudo, analisado por quem <em>já passou</em> por onde você quer chegar.</h1>
+      <p class="lead">Um diagnóstico da sua rotina, um encontro individual com a Prof. Pollyana Lyra, um parecer escrito de direcionamento e 30 dias de acompanhamento na plataforma do Método APQR.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#investimento" data-ev="cta_hero">Quero minha consultoria</a>
+        <a class="link" href="#como-funciona">Ver como funciona</a>
+      </div>
+      <p class="note"><span class="dot" aria-hidden="true"></span>Atendimento individual com agenda reduzida.</p>
+    </div>
+
+    <div class="hero-visual">
+      <div class="hero-photo">
+        <img src="img/hero.webp" alt="Prof. Pollyana Lyra sentada à mesa, entre livros de Farmacologia, Toxicologia e Farmacognosia" width="1800" height="1200" fetchpriority="high">
+      </div>
+      <figure class="map" aria-label="Exemplo de mapa do edital no Método APQR">
+        <div class="map-head">
+          <span class="map-title">Seu edital, tópico por tópico</span>
+          <span class="map-tag">exemplo</span>
+        </div>
+        <ol id="map">
+          <li data-s="4" data-final="4"><span class="topic">Farmacologia</span><span class="state">Consolidado</span><span class="bar"><span></span><span></span><span></span><span></span></span></li>
+          <li data-s="3" data-final="3"><span class="topic">Farmácia Hospitalar</span><span class="state">Questões e revisão</span><span class="bar"><span></span><span></span><span></span><span></span></span></li>
+          <li data-s="2" data-final="2"><span class="topic">Assistência Farmacêutica no SUS</span><span class="state">Material pronto</span><span class="bar"><span></span><span></span><span></span><span></span></span></li>
+          <li data-s="1" data-final="1"><span class="topic">Legislação Sanitária</span><span class="state">Assimilação</span><span class="bar"><span></span><span></span><span></span><span></span></span></li>
+          <li data-s="0" data-final="0"><span class="topic">Toxicologia</span><span class="state">Não iniciado</span><span class="bar"><span></span><span></span><span></span><span></span></span></li>
+        </ol>
+        <figcaption class="map-foot">Você enxerga, por cores, onde está cada tópico.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ====== DOR ====== -->
+<section class="sec sec-mist pain" aria-labelledby="h-pain">
+  <div class="wrap">
+    <div class="pain-head">
+      <h2 class="h2" id="h-pain">Você estuda. Mas será que está estudando o que precisa?</h2>
+      <p class="intro">Quase todo concurseiro da Farmácia chega até aqui por um destes três caminhos.</p>
+    </div>
+    <div>
+      <div class="pain-list">
+        <article class="pain-item">
+          <h3>Muito conteúdo, pouca direção.</h3>
+          <p>Você assina cursos, baixa PDFs, salva posts e ainda não sabe por onde começar.</p>
+        </article>
+        <article class="pain-item">
+          <h3>Uma rotina que não se sustenta.</h3>
+          <p>Plantão, trabalho, família. O cronograma perfeito dura uma semana.</p>
+        </article>
+        <article class="pain-item">
+          <h3>A sensação de andar em círculos.</h3>
+          <p>Você revisa, mas esquece. Faz questões, mas não sabe o que o erro está dizendo.</p>
+        </article>
+      </div>
+      <p class="pain-close">O problema raramente é falta de esforço. Quase sempre é falta de <strong>direção</strong>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ====== COMO FUNCIONA ====== -->
+<section class="sec how" id="como-funciona" aria-labelledby="h-how">
+  <div class="wrap">
+    <div class="how-photo">
+      <figure>
+        <img src="img/encontro.webp" alt="Prof. Pollyana Lyra no sofá, com o notebook, pronta para um atendimento online" width="1000" height="1500" loading="lazy">
+      </figure>
+      <p class="how-photo-cap" hidden></p>
+    </div>
+    <div>
+      <h2 class="h2" id="h-how">Como funciona a consultoria</h2>
+      <p class="intro">Seis etapas, do pagamento ao plano em prática. Você sabe o que acontece em cada uma.</p>
+      <ol class="steps">
+        <li class="step"><span class="num" aria-hidden="true">1</span><div><h3>Você garante sua vaga</h3><p>Pagamento por Pix ou cartão de crédito.</p></div></li>
+        <li class="step"><span class="num" aria-hidden="true">2</span><div><h3>Agendamos pelo WhatsApp</h3><p>A equipe chama você para combinar o melhor horário dentro da agenda da professora.</p></div></li>
+        <li class="step"><span class="num" aria-hidden="true">3</span><div><h3>Você preenche o diagnóstico</h3><p>Rotina, histórico, edital-alvo e dificuldades. Tudo antes do encontro, para que nenhum minuto seja desperdiçado.</p></div></li>
+        <li class="step"><span class="num" aria-hidden="true">4</span><div><h3>Encontro individual com a Prof. Pollyana</h3><p>Cerca de 1 hora, online, só sobre você: o que manter, o que cortar e por onde seguir.</p></div></li>
+        <li class="step"><span class="num" aria-hidden="true">5</span><div><h3>Você recebe o relatório de direcionamento</h3><p>Um parecer escrito da professora, para consultar sempre que bater a dúvida.</p></div></li>
+        <li class="step"><span class="num" aria-hidden="true">6</span><div><h3>30 dias de APQR para colocar em prática</h3><p>Seu edital cadastrado na plataforma, com metas semanais e o seu progresso visível tópico por tópico.</p></div></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ====== MÉTODO APQR ====== -->
+<section class="sec sec-mist" aria-labelledby="h-apqr">
+  <div class="wrap">
+    <div class="apqr-top">
+      <h2 class="h2" id="h-apqr">O método por trás do direcionamento</h2>
+      <p class="intro" style="margin-top:0">O APQR é o método de estudo desenvolvido pela Prof. Pollyana para transformar o edital em um mapa visível. Cada tópico avança por quatro etapas, e você enxerga por cores exatamente onde está.</p>
+    </div>
+    <div class="letters">
+      <div class="letter" style="--c:var(--st-1)"><b aria-hidden="true">A</b><span class="swatch"></span><h3>Assimilação</h3><p>Entender o conteúdo de verdade, não só ler.</p></div>
+      <div class="letter" style="--c:var(--st-2)"><b aria-hidden="true">P</b><span class="swatch"></span><h3>Produção de material</h3><p>Criar a sua revisão, no seu formato.</p></div>
+      <div class="letter" style="--c:var(--st-3)"><b aria-hidden="true">Q</b><span class="swatch"></span><h3>Questões</h3><p>Treinar com o estilo da banca.</p></div>
+      <div class="letter" style="--c:var(--st-4)"><b aria-hidden="true">R</b><span class="swatch"></span><h3>Revisão</h3><p>Voltar no tempo certo, até consolidar.</p></div>
+    </div>
+    <div class="legend">
+      <p class="legend-title">A cor de cada tópico do seu edital</p>
+      <div class="legend-bar">
+        <div style="--c:var(--st-0)"><i></i><span>Não iniciado</span></div>
+        <div style="--c:var(--st-1)"><i></i><span>Assimilação</span></div>
+        <div style="--c:var(--st-2)"><i></i><span>Material pronto</span></div>
+        <div style="--c:var(--st-3)"><i></i><span>Questões e revisão</span></div>
+        <div style="--c:var(--st-4)"><i></i><span>Consolidado</span></div>
+      </div>
+      <div class="legend-facts">
+        <span>Mínimo de 20 questões por revisão</span>
+        <span>Consolida acima de 70% de acerto</span>
+        <span>Até 4 revisões por ciclo</span>
+      </div>
+    </div>
+    <p class="apqr-close">Na consultoria, você recebe 30 dias de plataforma com o seu edital já cadastrado.</p>
+  </div>
+</section>
+
+<!-- ====== QUEM CONDUZ ====== -->
+<section class="sec who" aria-labelledby="h-who">
+  <div class="wrap">
+    <div class="who-photo">
+      <figure>
+        <img src="img/autoridade.webp" alt="Prof. Pollyana Lyra comemorando com o edital do concurso do Corpo de Bombeiros Militar do Distrito Federal para Farmácia-Bioquímica" width="1000" height="1500" loading="lazy">
+      </figure>
+    </div>
+    <div class="who-text">
+      <h2 class="h2" id="h-who">Quem vai analisar o seu estudo</h2>
+      <p class="first">Sou Pollyana Lyra, farmacêutica e professora. Sou Farmacêutica do Corpo de Bombeiros Militar do Distrito Federal e Analista da Fundação Hemocentro de Brasília.</p>
+      <p>Desde 2015 produzo materiais para concursos da área e estruturei um programa de mentoria com metodologia própria, que já ajudou centenas de alunos a mudar a forma como estudam.</p>
+      <p>Eu sei o que é estudar com rotina apertada e insegurança. Foi esse caminho que me trouxe até aqui, e é ele que eu quero encurtar para você.</p>
+      <dl class="creds">
+        <div><dt>Corpo de Bombeiros Militar do DF</dt><dd>Farmacêutica</dd></div>
+        <div><dt>Fundação Hemocentro de Brasília</dt><dd>Analista</dd></div>
+        <div><dt>Materiais para concursos</dt><dd>Desde 2015</dd></div>
+        <div><dt>Instagram @prof.pollyanalyra</dt><dd>54 mil seguidores</dd></div>
+      </dl>
+      <p class="sign" aria-label="Assinatura: Polly">Polly</p>
+    </div>
+  </div>
+</section>
+
+<!-- ====== RESULTADOS ====== -->
+<section class="sec results" aria-labelledby="h-results">
+  <div class="wrap">
+    <div>
+      <p class="big" aria-hidden="true"><small>+</small>10</p>
+      <h2 id="h-results">aprovados dentro das vagas no último concurso da Anvisa</h2>
+      <p class="sub">Especialista em Regulação e Vigilância Sanitária, Área 2.</p>
+    </div>
+    <div>
+      <div class="results-list">
+        <div><strong>Secretarias de Saúde</strong><span>Aprovações em concursos estaduais e municipais pelo país.</span></div>
+        <div><strong>Quadros militares farmacêuticos</strong><span>Carreiras de farmacêutico nas forças militares.</span></div>
+        <div><strong>Conselhos e residências</strong><span>CRFs e programas de residência em Farmácia.</span></div>
+      </div>
+      <p class="fine">Resultados de alunos da mentoria e dos materiais da Prof. Pollyana.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ====== DEPOIMENTOS ====== -->
+<section class="sec sec-mist" aria-labelledby="h-quotes">
+  <div class="wrap">
+    <div class="quotes-head">
+      <h2 class="h2" id="h-quotes">O que dizem os alunos da Prof. Pollyana</h2>
+    </div>
+    <div class="quotes" tabindex="0" aria-label="Depoimentos de alunos">
+      <figure class="quote featured">
+        <blockquote>Passar em um concurso sempre foi um sonho meu, mas a cada prova parecia que esse dia não chegaria. Essa realidade mudou quando entrei na mentoria. Tudo isso trouxe minha aprovação.</blockquote>
+        <figcaption><span class="mono" aria-hidden="true">CM</span><cite><b>C. M.</b>7º lugar na SESAU-AL e 11º no FUNSAÚDE-CE (1ª fase)</cite></figcaption>
+      </figure>
+      <figure class="quote">
+        <blockquote>Professora, passei! Obrigada por todo ensinamento. Se não fosse a mentoria, não teria passado.</blockquote>
+        <figcaption><span class="mono" aria-hidden="true">ML</span><cite><b>M. L.</b>35º lugar no resultado preliminar</cite></figcaption>
+      </figure>
+      <figure class="quote">
+        <blockquote>Com a mentoria consegui me sentir mais confiante e organizar a rotina de estudo. Os encontros e as dicas são de grande importância para o desenvolvimento dos estudos.</blockquote>
+        <figcaption><span class="mono" aria-hidden="true">NS</span><cite><b>N. F. S.</b>Aprovada nas residências da UFPR (1º lugar na etapa 1), Sírio-Libanês (2º), UNISA (3º) e USP</cite></figcaption>
+      </figure>
+      <figure class="quote">
+        <blockquote>Lembro da última mensagem que você me falou: você precisa pagar o preço. E eu paguei.</blockquote>
+        <figcaption><span class="mono" aria-hidden="true">T</span><cite><b>T.</b>Aprovado em Betim</cite></figcaption>
+      </figure>
+      <figure class="quote">
+        <blockquote>Eu entrei na mentoria totalmente perdida. Consegui melhorar meu foco, memorização e planejamento, e aprendi a lidar com minhas dificuldades.</blockquote>
+        <figcaption><span class="mono" aria-hidden="true">RC</span><cite><b>R. C.</b>Aluna da mentoria</cite></figcaption>
+      </figure>
+      <figure class="quote">
+        <blockquote>7º lugar no CRF-MT. O seu livro de redação ajudou muito na prova.</blockquote>
+        <figcaption><span class="mono" aria-hidden="true">DR</span><cite><b>D. T. R.</b>Aprovada no CRF-MT</cite></figcaption>
+      </figure>
+      <figure class="quote">
+        <blockquote>Fui estagiária na Anvisa em 2014 e tudo o que eu desejei era que esse concurso chegasse. Obrigada por fazer não só eu, mas outros farmacêuticos acreditarem que é possível.</blockquote>
+        <figcaption><span class="mono" aria-hidden="true">A</span><cite><b>Aluna da mentoria Anvisa</b>Mensagem antes da prova</cite></figcaption>
+      </figure>
+      <figure class="quote">
+        <blockquote>A questão de excipientes, dióxido de titânio: só lembrei da aula de revisão de ontem da mentoria.</blockquote>
+        <figcaption><span class="mono" aria-hidden="true">A</span><cite><b>Aluna da mentoria</b>No dia da prova</cite></figcaption>
+      </figure>
+    </div>
+    <p class="quotes-note">Depoimentos de alunos da mentoria e dos materiais, publicados com autorização. Nomes abreviados para preservar a privacidade.</p>
+  </div>
+</section>
+
+<!-- ====== PARA QUEM ====== -->
+<section class="sec" aria-labelledby="h-fit">
+  <div class="wrap">
+    <h2 class="h2" id="h-fit">A consultoria é para você?</h2>
+    <div class="fit-grid">
+      <div class="fit yes">
+        <h3>É para você se</h3>
+        <ul>
+          <li><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10" fill="none" stroke="#4F9D76" stroke-width="1.5"/><path d="M6.5 11.3l3 3 6-6.3" fill="none" stroke="#4F9D76" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Você já estuda, ou quer começar, mas sente que falta direção.</span></li>
+          <li><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10" fill="none" stroke="#4F9D76" stroke-width="1.5"/><path d="M6.5 11.3l3 3 6-6.3" fill="none" stroke="#4F9D76" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Tem um edital ou cargo-alvo na área farmacêutica.</span></li>
+          <li><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10" fill="none" stroke="#4F9D76" stroke-width="1.5"/><path d="M6.5 11.3l3 3 6-6.3" fill="none" stroke="#4F9D76" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Precisa de um plano que caiba na sua rotina real.</span></li>
+          <li><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10" fill="none" stroke="#4F9D76" stroke-width="1.5"/><path d="M6.5 11.3l3 3 6-6.3" fill="none" stroke="#4F9D76" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Quer uma análise individual, e não um cronograma genérico.</span></li>
+        </ul>
+      </div>
+      <div class="fit no">
+        <h3>Não é para você se</h3>
+        <ul>
+          <li><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10" fill="none" stroke="#A9A2B4" stroke-width="1.5"/><path d="M7 11h8" stroke="#A9A2B4" stroke-width="1.8" stroke-linecap="round"/></svg><span>Procura uma fórmula mágica ou promessa de aprovação.</span></li>
+          <li><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10" fill="none" stroke="#A9A2B4" stroke-width="1.5"/><path d="M7 11h8" stroke="#A9A2B4" stroke-width="1.8" stroke-linecap="round"/></svg><span>Não pretende aplicar o plano nos 30 dias seguintes.</span></li>
+          <li><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10" fill="none" stroke="#A9A2B4" stroke-width="1.5"/><path d="M7 11h8" stroke="#A9A2B4" stroke-width="1.8" stroke-linecap="round"/></svg><span>Quer apenas um curso de conteúdo. Para isso, conheça os <a href="https://pollylyra.com" target="_blank" rel="noopener">cursos da professora</a>.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== INVESTIMENTO ====== -->
+<section class="sec sec-mist offer" id="investimento" aria-labelledby="h-offer">
+  <div class="wrap">
+    <div class="offer-side">
+      <h2 class="h2" id="h-offer">Garanta a sua consultoria</h2>
+      <p class="intro">Atendimento individual com agenda reduzida: poucas consultorias por mês, para que cada análise receba o tempo que merece.</p>
+      <ol class="next" aria-label="O que acontece depois do pagamento">
+        <li><span aria-hidden="true">1</span><p>Você conclui o pagamento por Pix ou cartão.</p></li>
+        <li><span aria-hidden="true">2</span><p>A equipe chama você no WhatsApp para agendar o encontro.</p></li>
+        <li><span aria-hidden="true">3</span><p>Você preenche o diagnóstico e a professora estuda o seu caso antes de conversar com você.</p></li>
+      </ol>
+      <div class="bonus">
+        <div class="bonus-ic" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B88B1C" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="M8.5 13.8L7 22l5-3 5 3-1.5-8.2"/></svg></div>
+        <div>
+          <h3>Quem faz a parte dele segue com vantagem</h3>
+          <p>Durante os 30 dias de plataforma, o seu rendimento é acompanhado automaticamente. Quem cumpre as metas de estudo recebe um crédito de desconto para seguir na mentoria ou na plataforma.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <small>Prof. Pollyana Lyra</small>
+        <h3>Consultoria Individual de Estudos</h3>
+      </div>
+      <div class="card-body">
+        <ul class="incl">
+          <li><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M4.5 10.5l3.5 3.5 7.5-8" fill="none" stroke="#B9679F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Formulário diagnóstico</li>
+          <li><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M4.5 10.5l3.5 3.5 7.5-8" fill="none" stroke="#B9679F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Análise prévia da professora</li>
+          <li><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M4.5 10.5l3.5 3.5 7.5-8" fill="none" stroke="#B9679F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Encontro individual online, cerca de 1 hora</li>
+          <li><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M4.5 10.5l3.5 3.5 7.5-8" fill="none" stroke="#B9679F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Relatório de direcionamento por escrito</li>
+          <li><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M4.5 10.5l3.5 3.5 7.5-8" fill="none" stroke="#B9679F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>30 dias de plataforma APQR com o seu edital</li>
+          <li><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M4.5 10.5l3.5 3.5 7.5-8" fill="none" stroke="#B9679F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Bônus por rendimento para continuar</li>
+        </ul>
+        <div class="price">
+          <p class="price-pix-label">10% de desconto no Pix</p>
+          <p class="price-main"><strong><sup>R$</sup>627,30</strong><span>à vista no Pix</span></p>
+          <p class="price-alt">ou 3x de R$ 232,33 sem juros no cartão <span style="color:var(--muted)">(total R$ 697)</span></p>
+        </div>
+        <label class="terms" for="aceite">
+          <input type="checkbox" id="aceite">
+          <span>Li e aceito o <a href="#" data-link="termo" target="_blank" rel="noopener">Termo de Adesão</a> da consultoria.</span>
+        </label>
+        <div class="pay">
+          <a class="btn btn-primary" id="pay-pix" href="#" target="_blank" rel="noopener" aria-disabled="true">Pagar com Pix</a>
+          <a class="btn btn-ghost" id="pay-card" href="#" target="_blank" rel="noopener" aria-disabled="true">Pagar com cartão</a>
+        </div>
+        <p class="pay-hint" id="pay-hint" aria-live="polite">Marque o aceite do termo para liberar o pagamento.</p>
+        <p class="after">Depois do pagamento, a equipe entra em contato pelo WhatsApp para agendar o seu encontro.</p>
+        <p class="member">Já é aluno da mentoria? <a class="link" href="#" data-link="aluno">Fale com a equipe</a>, há uma condição para você.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== FAQ ====== -->
+<section class="sec faq" aria-labelledby="h-faq">
+  <div class="wrap">
+    <div>
+      <h2 class="h2" id="h-faq">Perguntas frequentes</h2>
+      <p class="intro">Ficou alguma dúvida? <a class="link" href="#" data-link="duvida">Fale com a equipe no WhatsApp</a>.</p>
+    </div>
+    <div class="faq-list">
+      <details><summary>Como é feito o agendamento?<i aria-hidden="true"></i></summary><p>Depois que o pagamento é confirmado, a equipe chama você no WhatsApp para combinar o melhor horário dentro da agenda da professora.</p></details>
+      <details><summary>O encontro é online?<i aria-hidden="true"></i></summary><p>Sim. É um encontro individual, por videochamada, com duração aproximada de 1 hora.</p></details>
+      <details><summary>Posso remarcar?<i aria-hidden="true"></i></summary><p>Pode, com até 1 dia de antecedência, no máximo 2 vezes.</p></details>
+      <details><summary>E se eu ainda não tenho um edital aberto?<i aria-hidden="true"></i></summary><p>Sem problema. A análise considera o cargo-alvo e o último edital como referência.</p></details>
+      <details><summary>O que acontece depois dos 30 dias?<i aria-hidden="true"></i></summary><p>Você mantém o seu relatório. Se quiser continuar, pode seguir na plataforma ou entrar em uma turma da mentoria, e o bônus por rendimento ajuda nessa continuidade. Nada é renovado automaticamente.</p></details>
+      <details><summary>A consultoria garante aprovação?<i aria-hidden="true"></i></summary><p>Não, e desconfie de quem garante. O que entregamos é direção, método e acompanhamento. A dedicação continua sendo sua.</p></details>
+      <details><summary>Quais as formas de pagamento?<i aria-hidden="true"></i></summary><p>Pix, com 10% de desconto, ou cartão de crédito em até 3x sem juros.</p></details>
+      <details><summary>Já sou aluno da mentoria. Faz sentido?<i aria-hidden="true"></i></summary><p>Faz, e há uma condição especial para você. <a class="link" href="#" data-link="aluno">Fale com a equipe</a>.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ====== FECHAMENTO ====== -->
+<section class="sec sec-mist close" aria-labelledby="h-close">
+  <div class="wrap">
+    <div>
+      <h2 id="h-close">Você não precisa estudar mais. Precisa estudar na <em>direção certa</em>.</h2>
+      <p class="intro">Uma conversa individual pode economizar meses de esforço mal direcionado.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#investimento" data-ev="cta_final">Quero minha consultoria</a>
+        <a class="link" href="#" data-link="duvida">Tenho uma dúvida antes</a>
+      </div>
+    </div>
+    <figure>
+      <img src="img/fechamento.webp" alt="Prof. Pollyana Lyra sorrindo e apontando para o lado" width="1000" height="1500" loading="lazy">
+    </figure>
+  </div>
+</section>
+
+</main>
+
+<!-- ====== RODAPÉ ====== -->
+<footer class="foot">
+  <div class="wrap">
+    <div>
+      <img src="img/logo-pollyana.png" alt="Pollyana Lyra" width="140" height="48" style="width:140px">
+      <nav aria-label="Links do rodapé">
+        <a href="#" data-link="termo" target="_blank" rel="noopener">Termo de Adesão</a>
+        <a href="https://instagram.com/prof.pollyanalyra" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://pollylyra.com" target="_blank" rel="noopener">Cursos</a>
+        <a href="https://pollylyra.com.br/apqr-login" target="_blank" rel="noopener">Área do aluno</a>
+      </nav>
+      <p class="legal">© 2026 ONE UP, CNPJ 50.061.343/0001-34. Todos os direitos reservados.</p>
+    </div>
+    <div class="made"><span>desenvolvido por</span><img src="img/logo-oneup.png" alt="ONE UP" width="240" height="92"></div>
+  </div>
+</footer>
+
+<!-- barra fixa no celular -->
+<div class="mbar" id="mbar" aria-hidden="true">
+  <p><strong>R$ 627,30</strong>no Pix, ou 3x sem juros</p>
+  <a class="btn btn-primary" href="#investimento" tabindex="-1" data-ev="cta_mbar">Quero minha consultoria</a>
+</div>
+
+<script>
+/* ====== CONFIGURAÇÃO (edite aqui) ====== */
+const CONFIG = {
+  WHATSAPP: "5561995667240",
+  TERMO: "https://drive.google.com/file/d/1IAe3GUjt1k-t-59RLyMqfSDu2zAXubih/view?usp=sharing",
+  CHECKOUT_PIX: "",      // cole aqui o link do checkout Pix (Pagar.me)
+  CHECKOUT_CARTAO: "",   // cole aqui o link do checkout cartão (Pagar.me)
+  META_PIXEL_ID: "",     // ex.: "123456789012345"
+  GA4_ID: ""             // ex.: "G-XXXXXXXXXX"
+};
+
+(function(){
+  "use strict";
+  const $ = (s, r=document) => r.querySelector(s);
+  const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+  const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---- UTM: guarda e repassa ---- */
+  const params = new URLSearchParams(location.search);
+  const utm = {};
+  ["utm_source","utm_medium","utm_campaign","utm_content","utm_term"].forEach(k => { if (params.get(k)) utm[k] = params.get(k); });
+  const withUtm = url => {
+    if (!url || !Object.keys(utm).length) return url;
+    try { const u = new URL(url); Object.entries(utm).forEach(([k,v]) => u.searchParams.set(k,v)); return u.toString(); } catch(e){ return url; }
+  };
+
+  /* ---- links ---- */
+  const wa = msg => "https://wa.me/" + CONFIG.WHATSAPP + "?text=" + encodeURIComponent(msg);
+  const LINKS = {
+    termo: CONFIG.TERMO,
+    duvida: wa("Olá! Vim pela página da Consultoria Individual da Prof. Pollyana e tenho uma dúvida."),
+    aluno: wa("Olá! Já sou aluno(a) da mentoria e tenho interesse na Consultoria Individual.")
+  };
+  $$("[data-link]").forEach(a => {
+    a.href = LINKS[a.dataset.link];
+    a.target = "_blank"; a.rel = "noopener";
+    if (a.dataset.link !== "termo") a.addEventListener("click", () => track("contact"));
+  });
+  const pix = $("#pay-pix"), card = $("#pay-card");
+  pix.href = withUtm(CONFIG.CHECKOUT_PIX) || wa("Olá! Quero garantir a minha Consultoria Individual com pagamento via Pix.");
+  card.href = withUtm(CONFIG.CHECKOUT_CARTAO) || wa("Olá! Quero garantir a minha Consultoria Individual com pagamento no cartão.");
+
+  /* ---- aceite do termo libera pagamento ---- */
+  const aceite = $("#aceite"), hint = $("#pay-hint");
+  const syncPay = () => {
+    const ok = aceite.checked;
+    [pix, card].forEach(b => { b.setAttribute("aria-disabled", ok ? "false" : "true"); b.tabIndex = ok ? 0 : -1; });
+    hint.textContent = ok ? "" : "Marque o aceite do termo para liberar o pagamento.";
+  };
+  aceite.addEventListener("change", syncPay); syncPay();
+  pix.addEventListener("click", () => track("checkout", {value:627.30, payment:"pix"}));
+  card.addEventListener("click", () => track("checkout", {value:697, payment:"cartao"}));
+
+  /* ---- rastreamento (só carrega com IDs preenchidos) ---- */
+  if (CONFIG.META_PIXEL_ID) {
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");
+    fbq("init", CONFIG.META_PIXEL_ID); fbq("track","PageView");
+    fbq("track","ViewContent",{content_name:"Consultoria Individual",value:697,currency:"BRL"});
+  }
+  if (CONFIG.GA4_ID) {
+    const s = document.createElement("script"); s.async = true; s.src = "https://www.googletagmanager.com/gtag/js?id=" + CONFIG.GA4_ID; document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || []; window.gtag = function(){ dataLayer.push(arguments); };
+    gtag("js", new Date()); gtag("config", CONFIG.GA4_ID);
+  }
+  function track(type, d={}){
+    try {
+      if (type === "checkout") {
+        window.fbq && fbq("track","InitiateCheckout",{value:d.value,currency:"BRL",content_name:"Consultoria Individual",payment:d.payment});
+        window.gtag && gtag("event","begin_checkout",{value:d.value,currency:"BRL",payment_type:d.payment,items:[{item_name:"Consultoria Individual"}]});
+      } else if (type === "contact") {
+        window.fbq && fbq("track","Contact");
+        window.gtag && gtag("event","generate_lead",{method:"whatsapp"});
+      } else if (type === "pricing") {
+        window.fbq && fbq("trackCustom","ViewPricing");
+        window.gtag && gtag("event","view_item",{value:697,currency:"BRL",items:[{item_name:"Consultoria Individual"}]});
+      } else if (type === "faq") {
+        window.gtag && gtag("event","select_content",{content_type:"faq",item_id:d.id});
+      }
+    } catch(e){}
+  }
+  $$(".faq-list details").forEach((d,i) => d.addEventListener("toggle", () => { if (d.open) track("faq",{id:String(i+1)}); }));
+
+  /* ---- cabeçalho e barra fixa ---- */
+  const top = $("#top"), mbar = $("#mbar"), hero = $(".hero"), offer = $("#investimento");
+  let pastHero = false, atOffer = false;
+  const syncBar = () => mbar.classList.toggle("show", pastHero && !atOffer);
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(([e]) => { pastHero = !e.isIntersecting; top.classList.toggle("scrolled", pastHero); syncBar(); }, {threshold:0}).observe(hero);
+    let priced = false;
+    new IntersectionObserver(([e]) => { atOffer = e.isIntersecting; syncBar(); if (atOffer && !priced){ priced = true; track("pricing"); } }, {threshold:0.15}).observe(offer);
+  }
+
+  /* ---- mapa do edital: o único movimento da página ---- */
+  const LABELS = ["Não iniciado","Assimilação","Material pronto","Questões e revisão","Consolidado"];
+  const rows = $$("#map li");
+  if (!reduce && rows.length) {
+    rows.forEach(r => { r.dataset.s = "0"; $(".state", r).textContent = LABELS[0]; });
+    let t = 450;
+    rows.forEach((r, i) => {
+      const fin = +r.dataset.final;
+      for (let s = 1; s <= fin; s++) {
+        setTimeout(() => { r.dataset.s = String(s); $(".state", r).textContent = LABELS[s]; }, t + i*160 + s*420);
+      }
+    });
+  }
+})();
+</script>
+</body></html>
