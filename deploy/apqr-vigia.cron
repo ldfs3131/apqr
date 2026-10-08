@@ -1,0 +1,4 @@
+# Vigia do APQR a cada 5 minutos. O instalar.sh grava este arquivo em /etc/cron.d/apqr-vigia.
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+*/5 * * * * root /usr/local/bin/apqr vigia >> /var/log/apqr-vigia.log 2>&1

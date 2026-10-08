@@ -1,0 +1,4 @@
+# Cópia diária do APQR às 03:40 (horário do servidor). O instalar.sh grava este arquivo em /etc/cron.d/apqr-backup.
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+40 3 * * * root /usr/local/bin/apqr backup --agendado >> /var/log/apqr-backup.log 2>&1

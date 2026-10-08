@@ -1,0 +1,38 @@
+{
+  "name": "apqr-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node --test --test-concurrency=1 test/*.test.js",
+    "create-admin": "node scripts/create-admin.js",
+    "seed:demo": "node scripts/seed-demo.js",
+    "import-v1": "node scripts/import-v1.js",
+    "load-test": "node scripts/load-test.js",
+    "backup": "node scripts/backup.js",
+    "restore": "node scripts/restore.js",
+    "import-base": "node scripts/import-base.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.2.1",
+    "nodemailer": "^10.0.10",
+    "pdf-lib": "^1.17.1",
+    "pg": "^8.23.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "supertest": "^7.3.0"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  }
+}

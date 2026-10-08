@@ -1,0 +1,42 @@
+# Publicação na Render (https://render.com): "New → Blueprint" apontando para este repositório.
+# Cria o site (com disco para PDFs e logotipos) e o banco PostgreSQL. Os campos "sync: false" são perguntados na tela.
+services:
+  - type: web
+    name: metodo-apqr
+    runtime: docker
+    plan: starter
+    healthCheckPath: /api/health/live
+    disk:
+      name: arquivos
+      mountPath: /data
+      sizeGB: 2
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: TRUST_PROXY
+        value: "1"
+      - key: FILES_DIR
+        value: /data/files
+      - key: DEFAULT_TENANT
+        value: pollyana-lyra
+      - key: DATABASE_URL
+        fromDatabase:
+          name: apqr-db
+          property: connectionString
+      - key: APP_URL
+        sync: false          # endereço final do site, ex.: https://mentoria.pollylyra.com.br
+      - key: ADMIN_EMAIL
+        sync: false          # seu e-mail de administrador ONE UP
+      - key: ADMIN_PASSWORD
+        sync: false          # senha forte (10+ caracteres, letras e números)
+      - key: ADMIN_NAME
+        value: Lucas Davi
+      - key: SMTP_URL
+        sync: false          # opcional: envio de e-mail (avisos de compra, links). Pode deixar vazio.
+      - key: MAIL_FROM
+        sync: false          # opcional
+databases:
+  - name: apqr-db
+    plan: basic-256mb
+    databaseName: apqr
+    user: apqr

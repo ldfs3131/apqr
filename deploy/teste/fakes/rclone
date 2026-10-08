@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# rclone de mentira: o "Drive" é uma pasta local ($FAKE_DRIVE/<remote>/...). Só o que o apqr usa.
+set -u
+: "${FAKE_DRIVE:?}"
+while [ "${1:-}" = --config ]; do shift 2; done
+cmd="${1:-}"; shift || true
+path() { local r="${1%%:*}" p="${1#*:}"; echo "$FAKE_DRIVE/$r/$p"; }
+case "$cmd" in
+  listremotes) for d in "$FAKE_DRIVE"/*/; do [ -d "$d" ] && echo "$(basename "$d"):"; done;;
+  mkdir) mkdir -p "$(path "$1")";;
+  copyto)
+    src="$1"; dst="$2"
+    [[ "$src" == *:* && ! -e "$src" ]] && src="$(path "$src")"
+    [[ "$dst" == *:* && ! "$dst" == /* ]] && dst="$(path "$dst")"
+    [ -f "${APQR_FAKE_DRIVE_FAIL:-/nonexistent}" ] && { echo "drive indisponível (fake)" >&2; exit 1; }
+    mkdir -p "$(dirname "$dst")"; cp "$src" "$dst";;
+  deletefile) rm -f "$(path "$1")";;
+  lsf)
+    fmt=p; if [ "${1:-}" = --format ]; then fmt="$2"; shift 2; fi
+    t="$(path "$1")"
+    if [ -d "$t" ]; then for f in "$t"/*; do [ -f "$f" ] || continue; case "$fmt" in sp) echo "$(stat -c %s "$f");$(basename "$f")";; s) stat -c %s "$f";; *) basename "$f";; esac; done
+    elif [ -f "$t" ]; then case "$fmt" in s) stat -c %s "$t";; *) basename "$t";; esac; fi;;
+esac

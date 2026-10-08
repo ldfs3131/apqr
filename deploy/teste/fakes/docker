@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+# Docker de mentira para o ensaio (só entende o que o apqr, backup.sh e restore.sh usam).
+# Estado em $FAKE_ROOT: images/, db, data/files, app.pid. O comportamento de cada versão vem do arquivo
+# FAKE na pasta releases/apqr-<versão>: ok | crash | buildfail | wrongversion
+set -u
+: "${FAKE_ROOT:?}"; : "${APQR_DIR:?}"
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+envget() { grep -E "^$1=" "$APQR_DIR/.env" 2>/dev/null | tail -n1 | cut -d= -f2- | tr -d '\r'; }
+ver="$(envget APQR_VERSION)"; port="$(envget APQR_PORT)"; port="${port:-3000}"
+mode() { cat "$APQR_DIR/releases/apqr-$1/FAKE" 2>/dev/null || echo ok; }
+stop_app() { if [ -f "$FAKE_ROOT/app.pid" ]; then kill "$(cat "$FAKE_ROOT/app.pid")" 2>/dev/null; rm -f "$FAKE_ROOT/app.pid"; sleep 0.3; fi; }
+start_app() {
+  local m reported; m="$(mode "$ver")"
+  echo "[docker] subindo app versão=$ver modo=$m" >> "$FAKE_ROOT/docker.log"
+  [ "$m" = crash ] && { echo "Error: app crashed on start (fake)" >&2; return 0; }
+  if grep -q 'APP_VERSION' "$APQR_DIR/docker-compose.yml"; then reported="$ver"; else reported=""; fi
+  [ "$m" = wrongversion ] && reported="0.0.0"
+  python3 "$HERE/stubapp.py" "$port" "$reported" > /dev/null 2>&1 &
+  echo $! > "$FAKE_ROOT/app.pid"
+  sleep 0.5
+}
+if [ "${1:-}" = image ]; then
+  case "${2:-}" in
+    inspect) [ -f "$FAKE_ROOT/images/$(echo "${3:-}" | tr '/:' '__')" ];;
+    rm) rm -f "$FAKE_ROOT/images/$(echo "${3:-}" | tr '/:' '__')";;
+  esac
+  exit $?
+fi
+[ "${1:-}" = compose ] || exit 0
+shift
+# remove opções globais irrelevantes
+while [ "${1:-}" = -f ] || [ "${1:-}" = --project-directory ]; do shift 2; done
+cmd="${1:-}"; shift || true
+case "$cmd" in
+  version) echo "Docker Compose version fake";;
+  config) grep -q INVALID_MARKER "$APQR_DIR/docker-compose.yml" && { echo "compose inválido (fake)" >&2; exit 1; }; exit 0;;
+  build)
+    m="$(mode "$ver")"; echo "[docker] build versão=$ver modo=$m" >> "$FAKE_ROOT/docker.log"
+    if [ "$m" = buildfail ]; then echo "npm ERR! build failed (fake)" >&2; exit 1; fi
+    mkdir -p "$FAKE_ROOT/images"; : > "$FAKE_ROOT/images/oneup_apqr_$ver"; echo "built oneup/apqr:$ver";;
+  up) stop_app; start_app;;
+  restart) stop_app; start_app;;
+  stop) stop_app;;
+  ps) echo "NAME  IMAGE  STATUS"; [ -f "$FAKE_ROOT/app.pid" ] && echo "apqr-app-1  oneup/apqr:$ver  Up (healthy)";;
+  logs) echo '{"t":"2026-10-04T10:00:00Z","msg":"request","route":"/api/auth/login","status":200}'; echo '{"t":"2026-10-04T10:01:00Z","msg":"request","route":"/api/auth/login","status":401}';;
+  port) exit 1;;
+  exec)
+    while [ "${1:-}" = -T ]; do shift; done
+    svc="${1:-}"; shift || true
+    case "$svc:${1:-}" in
+      db:pg_dump) [ -f "$FAKE_ROOT/fail-pg_dump" ] && exit 1; { echo PGDMP; cat "$FAKE_ROOT/db" 2>/dev/null || true; };;
+      db:pg_restore)
+        if [ "${2:-}" = -l ] || [[ " $* " == *" -l "* ]]; then c="$(cat)"; printf '%s' "$c" | head -n1 | grep -q PGDMP || exit 1; echo "; TABLE DATA public sales";
+        else c="$(cat)"; printf '%s\n' "$c" | tail -n +2 > "$FAKE_ROOT/db"; fi;;
+      db:psql) if [[ "$*" == *"DROP DATABASE"* ]]; then rm -f "$FAKE_ROOT/db"; fi;;
+      app:sh) mkdir -p "$FAKE_ROOT/data/files"; tar -czf - -C "$FAKE_ROOT/data" files;;
+    esac;;
+  run)
+    mkdir -p "$FAKE_ROOT/data"; rm -rf "$FAKE_ROOT/data/files"; tar -xzf - -C "$FAKE_ROOT/data";;
+  *) echo "[docker] comando não simulado: $cmd" >> "$FAKE_ROOT/docker.log";;
+esac

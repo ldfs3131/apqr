@@ -1,0 +1,65 @@
+# Verificação automática a cada alteração: testes no banco embutido, testes no PostgreSQL real,
+# compilação do site, teste de ponta a ponta no navegador e verificação de vulnerabilidades.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  testes:
+    name: Testes (banco embutido e PostgreSQL)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: apqr
+          POSTGRES_PASSWORD: apqr
+          POSTGRES_DB: apqr_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U apqr" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            server/package-lock.json
+            web/package-lock.json
+      - run: npm --prefix server ci
+      - name: Testes — banco embutido (PGlite)
+        run: npm --prefix server test
+        env: { PGLITE_DIR: "memory://" }
+      - name: Testes — PostgreSQL 16
+        # A imagem cria "apqr" como superusuário: o teste também comprova que a RLS continua valendo nesse caso.
+        run: npm --prefix server test
+        env: { DATABASE_URL: "postgres://apqr:apqr@localhost:5432/apqr_test" }
+      - name: Vulnerabilidades (servidor)
+        run: npm --prefix server audit --omit=dev --audit-level=high
+
+  site-e2e:
+    name: Site + ponta a ponta no navegador
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            server/package-lock.json
+            web/package-lock.json
+      - run: npm --prefix server ci
+      - run: npm --prefix web ci
+      - run: npm --prefix web run build
+      - name: Vulnerabilidades (site)
+        run: npm --prefix web audit --omit=dev --audit-level=high
+      - name: Instalar Playwright + Chromium
+        working-directory: e2e
+        run: npm install && npx playwright install --with-deps chromium
+      - name: Jornada completa no navegador
+        working-directory: e2e
+        run: npm test

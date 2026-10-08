@@ -1,0 +1,24 @@
+{
+  "name": "oneup-apqr",
+  "private": true,
+  "description": "ONE UP · Plataforma de acompanhamento de estudos pelo Método APQR",
+  "scripts": {
+    "build:web": "npm --prefix web run build",
+    "release:check": "bash scripts/release-check.sh",
+    "setup": "npm --prefix server install && npm --prefix web install && npm --prefix web run build",
+    "start": "npm --prefix server start",
+    "create-admin": "npm --prefix server run create-admin --",
+    "demo": "npm --prefix server run seed:demo",
+    "import-v1": "npm --prefix server run import-v1 --",
+    "dev:server": "npm --prefix server run dev",
+    "dev:web": "npm --prefix web run dev",
+    "test": "npm --prefix server test",
+    "e2e": "npm --prefix e2e install && npm --prefix e2e test",
+    "load-test": "npm --prefix server run load-test --",
+    "backup": "npm --prefix server run backup --",
+    "restore": "npm --prefix server run restore --"
+  },
+  "engines": {
+    "node": ">=22.13"
+  }
+}

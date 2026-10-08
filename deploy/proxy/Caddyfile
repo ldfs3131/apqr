@@ -1,0 +1,20 @@
+# Proxy da ONE UP. Cada sistema ganha um bloco "endereço { ... }" apontando para a porta interna dele.
+# Depois de editar:  docker compose exec caddy caddy reload --config /etc/caddy/Caddyfile
+{
+	email {$ACME_EMAIL}
+}
+
+# APQR · Pollyana Lyra
+mentoria.pollylyra.com.br {
+	encode zstd gzip
+	request_body {
+		max_size 25MB
+	}
+	reverse_proxy 127.0.0.1:3000
+}
+
+# Exemplo para o próximo sistema (remova o # das linhas e ajuste endereço e porta):
+# comanda.oneupsistemas.com.br {
+# 	encode zstd gzip
+# 	reverse_proxy 127.0.0.1:3001
+# }

@@ -1,0 +1,22 @@
+# Proxy único da ONE UP no VPS (pasta /opt/oneup/proxy): HTTPS automático para todos os sistemas.
+# Usa a rede do próprio servidor (network_mode: host) para alcançar os apps em 127.0.0.1.
+name: oneup-proxy
+
+services:
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      ACME_EMAIL: ${ACME_EMAIL:?defina ACME_EMAIL no .env (e-mail para avisos do certificado)}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data          # certificados (não apagar)
+      - caddy_config:/config
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "5" }
+
+volumes:
+  caddy_data: { name: oneup_caddy_data }
+  caddy_config: { name: oneup_caddy_config }

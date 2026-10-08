@@ -1,0 +1,28 @@
+# Produção simples: PostgreSQL + aplicação. Rode com:  docker compose up -d
+# Para o VPS da ONE UP (proxy com HTTPS, usuário limitado no banco, backup diário), use a pasta deploy/.
+# Antes, copie .env.example para .env e preencha.
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: apqr
+      POSTGRES_USER: apqr
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD no .env}
+    volumes: [ "pgdata:/var/lib/postgresql/data" ]
+    healthcheck: { test: ["CMD-SHELL", "pg_isready -U apqr"], interval: 10s, retries: 5 }
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on: { db: { condition: service_healthy } }
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://apqr:${POSTGRES_PASSWORD}@db:5432/apqr
+      DATABASE_SSL: "0"   # conexão interna do Docker: o PostgreSQL do contêiner não usa SSL
+    # Só o próprio servidor enxerga a porta; a internet chega pelo proxy com HTTPS.
+    ports: [ "127.0.0.1:3000:3000" ]
+    logging: { driver: json-file, options: { max-size: "10m", max-file: "5" } }
+    volumes: [ "files:/data" ]
+volumes:
+  pgdata:
+  files:

@@ -1,0 +1,636 @@
+#!/usr/bin/env bash
+# apqr — comando de administração do APQR no servidor (instalado em /usr/local/bin/apqr).
+#
+#   apqr ajuda      lista tudo        apqr status     como está agora
+#   apqr atualizar  versão nova do GitHub, com backup antes e volta sozinho se não ligar
+#
+# O APQR roda em Docker (pasta /opt/oneup/apqr). Este comando só administra: não mexe no Nginx,
+# nos outros sistemas da ONE UP, no firewall, no fuso horário nem no Node do servidor.
+set -Eeuo pipefail
+
+APQR_DIR="${APQR_DIR:-/opt/oneup/apqr}"
+BACKUP_ROOT="${BACKUP_ROOT:-/opt/oneup/backups/apqr}"
+STATE="${APQR_STATE:-$APQR_DIR/estado}"
+REPO="$APQR_DIR/repo"
+DOCKER="${DOCKER:-docker}"
+CRON_DIR="${CRON_DIR:-/etc/cron.d}"
+BIN_DIR="${BIN_DIR:-/usr/local/bin}"
+LOG_DIR="${APQR_LOG_DIR:-/var/log}"
+ALERT_URL="${APQR_ALERT_URL:-https://api.callmebot.com/whatsapp.php}"
+FRASE_FILE="$APQR_DIR/.backup-frase"
+ALERTAS_FILE="$APQR_DIR/.alertas"
+RCLONE_FILE="$APQR_DIR/.rclone-remoto"
+export APQR_DIR BACKUP_DIR="$BACKUP_ROOT"   # backup.sh e restore.sh usam os mesmos caminhos deste comando
+KEEP_EXTERNAL_DAILY=30
+KEEP_EXTERNAL_MONTHLY=12
+ALERT_REPEAT_SECONDS=21600     # não repete o mesmo aviso por 6 horas
+BACKUP_MAX_AGE_HOURS=26
+DISK_LIMIT_PERCENT=85
+CERT_MIN_DAYS=14
+
+# ───────────────────────── utilidades ─────────────────────────
+say()  { printf '%s\n' "$*"; }
+die()  { printf 'ERRO: %s\n' "$*" >&2; exit 1; }
+now()  { date +%s; }
+stamp() { date '+%F %T'; }
+logline() { mkdir -p "$LOG_DIR" 2>/dev/null || true; printf '%s %s\n' "$(stamp)" "$*" >> "$LOG_DIR/apqr-atualizacoes.log" 2>/dev/null || true; }
+
+ORIG_ARGS=("$@")
+need_root() {   # reexecuta o comando COMPLETO (ex.: "apqr atualizar --forcar") com sudo
+  if [ "${APQR_TEST:-}" != "1" ] && [ "${APQR_UID:-$(id -u)}" -ne 0 ]; then
+    exec sudo -E "$0" "${ORIG_ARGS[@]}"
+  fi
+}
+
+envget() { { grep -E "^$1=" "$APQR_DIR/.env" 2>/dev/null || true; } | tail -n1 | cut -d= -f2- | tr -d '\r'; }
+envset() {
+  local key="$1" val="$2" f="$APQR_DIR/.env"
+  if grep -qE "^$key=" "$f"; then sed -i "s|^$key=.*|$key=$val|" "$f"; else printf '%s=%s\n' "$key" "$val" >> "$f"; fi
+}
+kvget() { { grep -E "^$2=" "$1" 2>/dev/null || true; } | tail -n1 | cut -d= -f2-; }
+
+compose() { (cd "$APQR_DIR" && "$DOCKER" compose "$@" 9>&-); }   # 9>&-: nenhum filho herda o trava de "atualização em andamento"
+app_port() { local p; p="$(envget APQR_PORT)"; printf '%s' "${p:-3000}"; }
+health_json() { curl -fsS -m 8 "http://127.0.0.1:$(app_port)/api/health" 2>/dev/null || true; }
+json_version() { printf '%s' "$1" | sed -n 's/.*"version":"\([^"]*\)".*/\1/p'; }
+host_of_url() { printf '%s' "$(envget APP_URL)" | sed -E 's#^[a-z]+://##; s#[/:].*$##'; }
+
+# Espera o app responder "ok" (e, se pedido, na versão certa). Retorna 1 se estourar o tempo.
+wait_health() {
+  local want="${1:-}" limit="${APQR_HEALTH_TIMEOUT:-${2:-90}}" t0 j v
+  t0="$(now)"
+  while [ $(( $(now) - t0 )) -lt "$limit" ]; do
+    j="$(health_json)"
+    if printf '%s' "$j" | grep -q '"ok":true'; then
+      if [ -z "$want" ]; then return 0; fi
+      v="$(json_version "$j")"
+      [ "$v" = "$want" ] && return 0
+    fi
+    sleep "${APQR_POLL:-3}"
+  done
+  return 1
+}
+
+retry3() { local i; for i in 1 2 3; do "$@" && return 0; say "  tentativa $i de 3 falhou"; sleep "${APQR_RETRY_SLEEP:-5}"; done; return 1; }
+
+ensure_state() { mkdir -p "$STATE/alertas" "$STATE/anterior"; chmod 700 "$STATE" 2>/dev/null || true; }
+
+manut_on()  { ensure_state; now > "$STATE/manutencao"; }
+manut_off() { rm -f "$STATE/manutencao"; }
+
+# ───────────────────────── avisos no WhatsApp (CallMeBot) ─────────────────────────
+alerts_configured() { [ -f "$ALERTAS_FILE" ] && [ -n "$(kvget "$ALERTAS_FILE" ALERT_PHONE)" ] && [ -n "$(kvget "$ALERTAS_FILE" ALERT_APIKEY)" ]; }
+
+send_alert() {
+  local msg="$1" phone key
+  alerts_configured || { logline "alerta (sem WhatsApp configurado): $msg"; return 2; }
+  phone="$(kvget "$ALERTAS_FILE" ALERT_PHONE)"; key="$(kvget "$ALERTAS_FILE" ALERT_APIKEY)"
+  if curl -fsS -m 25 -G "$ALERT_URL" --data-urlencode "phone=$phone" --data-urlencode "text=$msg" --data-urlencode "apikey=$key" > /dev/null 2>&1; then
+    logline "alerta enviado: $msg"; return 0
+  fi
+  logline "alerta NÃO enviado (falha de rede ou chave): $msg"; return 1
+}
+
+# check ID TÍTULO ok|fail MENSAGEM — avisa ao cair, lembra a cada 6 h, avisa quando voltar.
+check() {
+  local id="$1" title="$2" status="$3" msg="${4:-}" f last rc
+  ensure_state; f="$STATE/alertas/$id"
+  if [ "$status" = fail ]; then
+    if [ -f "$f" ]; then
+      last="$(cat "$f")"
+      if [ $(( $(now) - last )) -ge "$ALERT_REPEAT_SECONDS" ]; then
+        if send_alert "🔴 APQR (lembrete): $msg"; then now > "$f"; fi
+      fi
+    else
+      rc=0; send_alert "🔴 APQR: $msg" || rc=$?
+      if [ "$rc" -ne 1 ]; then now > "$f"; fi   # falha de envio (1) tenta de novo no próximo ciclo
+    fi
+  elif [ -f "$f" ]; then
+    rc=0; send_alert "🟢 APQR: voltou ao normal — $title" || rc=$?
+    if [ "$rc" -ne 1 ]; then rm -f "$f"; fi
+  fi
+}
+
+# ───────────────────────── leituras (status, certificado, backups) ─────────────────────────
+cert_days() {
+  if [ -n "${APQR_CERT_DAYS:-}" ]; then printf '%s' "$APQR_CERT_DAYS"; return 0; fi
+  local host end epoch
+  host="$(host_of_url)"; [ -n "$host" ] || return 1
+  end="$(echo | timeout 15 openssl s_client -servername "$host" -connect "$host:443" 2>/dev/null | openssl x509 -noout -enddate 2>/dev/null | cut -d= -f2)" || return 1
+  [ -n "$end" ] || return 1
+  epoch="$(date -d "$end" +%s 2>/dev/null)" || return 1
+  printf '%s' $(( (epoch - $(now)) / 86400 ))
+}
+
+disk_percent() { if [ -n "${APQR_DISK_PERCENT:-}" ]; then printf '%s' "$APQR_DISK_PERCENT"; else df --output=pcent / | tail -n1 | tr -dc '0-9'; fi; }
+latest_backup_dir() { { ls -1d "$BACKUP_ROOT"/diario/apqr-* 2>/dev/null || true; } | sort | tail -n1; }
+age_hours() { printf '%s' $(( ($(now) - $(stat -c %Y "$1")) / 3600 )); }
+human_age() { local s=$(( $(now) - $1 )); if [ "$s" -lt 3600 ]; then printf '%s min' $((s/60)); elif [ "$s" -lt 172800 ]; then printf '%s h' $((s/3600)); else printf '%s dias' $((s/86400)); fi; }
+
+external_configured() { [ -f "$RCLONE_FILE" ] && [ -f "$FRASE_FILE" ] && [ -n "$(kvget "$RCLONE_FILE" REMOTE)" ]; }
+
+cmd_status() {
+  need_root "$@"
+  local j v port last mem disk cd ext
+  port="$(app_port)"; j="$(health_json)"
+  say "APQR — situação em $(stamp)"
+  say "──────────────────────────────────────────────"
+  if printf '%s' "$j" | grep -q '"ok":true'; then
+    v="$(json_version "$j")"
+    say "Sistema ........ NO AR  (versão em execução: ${v:-desconhecida}; configurada: $(envget APQR_VERSION))"
+  else
+    say "Sistema ........ FORA DO AR  (porta $port não responde) → rode: apqr logs"
+  fi
+  if [ -f "$STATE/manutencao" ]; then say "Manutenção ...... ATIVA (atualização em andamento)"; fi
+  last="$(latest_backup_dir)"
+  if [ -n "$last" ]; then say "Cópia no servidor  $(basename "$last") — há $(age_hours "$last") h"; else say "Cópia no servidor  NENHUMA (rode: apqr backup)"; fi
+  if external_configured; then
+    ext="$(cat "$STATE/ultimo-externo" 2>/dev/null || true)"
+    if [ -n "$ext" ]; then say "Cópia no Drive .. $(printf '%s' "$ext" | cut -d' ' -f2) — há $(human_age "$(printf '%s' "$ext" | cut -d' ' -f1)")"; else say "Cópia no Drive .. configurada, ainda sem envio (rode: apqr backup-externo agora)"; fi
+  else
+    say "Cópia no Drive .. NÃO configurada (rode: apqr backup-externo configurar)"
+  fi
+  if cd="$(cert_days)"; then say "Cadeado HTTPS .. vence em $cd dias ($(host_of_url))"; else say "Cadeado HTTPS .. não consegui conferir"; fi
+  mem="$(free -m | awk '/^Mem:/ {printf "%s MB livres de %s MB", $7, $2}')"; say "Memória ........ $mem"
+  disk="$(disk_percent)"; say "Disco ........... ${disk}% usado"
+  if alerts_configured; then say "Avisos WhatsApp . configurados"; else say "Avisos WhatsApp . NÃO configurados (rode: apqr alertas configurar)"; fi
+  say
+  compose ps 2>/dev/null | sed 's/^/  /' || true
+}
+
+# ───────────────────────── cópia de segurança ─────────────────────────
+cmd_backup() {
+  need_root "$@"
+  local scheduled=0
+  [ "${1:-}" = "--agendado" ] && scheduled=1
+  ensure_state
+  if "$APQR_DIR/backup.sh"; then
+    now > "$STATE/backup-ok"; rm -f "$STATE/backup-falhou"
+    check backup_falhou "cópia de segurança" ok
+    if [ "$scheduled" = 1 ] && external_configured; then cmd_backup_externo_agora --sem-backup-novo || true; fi
+  else
+    touch "$STATE/backup-falhou"
+    check backup_falhou "cópia de segurança" fail "a cópia de segurança de hoje FALHOU. Rode: apqr backup"
+    exit 1
+  fi
+}
+
+cmd_restaurar() {
+  need_root "$@"
+  local src="${1:-}"
+  if [ -z "$src" ]; then
+    say "Uso: apqr restaurar <nome ou pasta da cópia>"; say "Cópias disponíveis:"
+    { ls -1d "$BACKUP_ROOT"/diario/apqr-* "$BACKUP_ROOT"/mensal/apqr-* 2>/dev/null || true; } | sort | tail -n 20 | sed 's#^#  #'
+    exit 1
+  fi
+  [ -d "$src" ] || src="$(ls -1d "$BACKUP_ROOT"/diario/"$src" "$BACKUP_ROOT"/mensal/"$src" "$BACKUP_ROOT"/recuperado/"$src" 2>/dev/null | head -n1 || true)"
+  [ -n "$src" ] && [ -d "$src" ] || die "não achei essa cópia. Rode 'apqr restaurar' sem nome para listar."
+  manut_on; trap manut_off EXIT
+  "$APQR_DIR/restore.sh" "$src"
+}
+
+# ───────────────────────── cópia cifrada no Google Drive (rclone) ─────────────────────────
+rc() {
+  local conf; conf="$(kvget "$RCLONE_FILE" CONF)"
+  if [ -n "$conf" ]; then rclone --config "$conf" "$@"; else rclone "$@"; fi
+}
+rc_base() { printf '%s:ONEUP-backups/apqr' "$(kvget "$RCLONE_FILE" REMOTE)"; }
+gpg_pass() { gpg --batch --yes --quiet --pinentry-mode loopback --passphrase-file "${FRASE_TMP:-$FRASE_FILE}" "$@"; }
+
+cmd_backup_externo() {
+  need_root "$@"
+  case "${1:-}" in
+    configurar) shift; cmd_backup_externo_configurar "$@";;
+    agora)      shift; cmd_backup_externo_agora "$@";;
+    listar)     shift; cmd_backup_externo_listar "$@";;
+    *) say "Uso: apqr backup-externo configurar | agora | listar"; exit 1;;
+  esac
+}
+
+cmd_backup_externo_configurar() {
+  command -v rclone > /dev/null || {
+    say "O rclone (programa que envia ao Google Drive) não está instalado."
+    if [ "${APQR_YES:-}" = 1 ] || { read -r -p "Instalar agora? (sim/não) " a && [ "$a" = sim ]; }; then apt-get install -y rclone; else die "instale com: sudo apt-get install -y rclone"; fi
+  }
+  local confs c remotes list choice remote conf="" n=0 cand
+  confs=("" "/root/.config/rclone/rclone.conf" /home/*/.config/rclone/rclone.conf /opt/oneup/*/rclone.conf /opt/oneup/.config/rclone/rclone.conf)
+  list=()
+  for c in "${confs[@]}"; do
+    if [ -z "$c" ]; then remotes="$(rclone listremotes 2>/dev/null || true)"; else [ -f "$c" ] || continue; remotes="$(rclone --config "$c" listremotes 2>/dev/null || true)"; fi
+    for cand in $remotes; do list+=("$c|${cand%:}"); done
+  done
+  [ "${#list[@]}" -gt 0 ] || die "nenhuma conexão do rclone encontrada. Faça a autorização do Google Drive com 'rclone config' (o mesmo do restaurante serve) e rode este comando de novo."
+  say "Conexões do Google Drive encontradas:"
+  for cand in "${list[@]}"; do n=$((n+1)); say "  $n) ${cand#*|}   ${cand%%|*}"; done
+  if [ "${APQR_REMOTE_CHOICE:-}" ]; then choice="$APQR_REMOTE_CHOICE"; else read -r -p "Qual usar? (número) " choice; fi
+  [[ "$choice" =~ ^[0-9]+$ ]] && [ "$choice" -ge 1 ] && [ "$choice" -le "${#list[@]}" ] || die "escolha inválida."
+  cand="${list[$((choice-1))]}"; conf="${cand%%|*}"; remote="${cand#*|}"
+  umask 077
+  printf 'REMOTE=%s\nCONF=%s\n' "$remote" "$conf" > "$RCLONE_FILE"
+
+  if [ ! -f "$FRASE_FILE" ]; then
+    local ja="${APQR_FRASE_EXISTENTE:-}" nova=""
+    if [ -z "$ja" ] && [ "${APQR_YES:-}" != 1 ]; then read -r -p "Este servidor é novo e você JÁ tem a frase das cópias (de um servidor anterior)? (sim/não) " ja; fi
+    if [ "$ja" = sim ]; then
+      read -r -s -p "Digite a frase das cópias (do seu gerenciador de senhas; não aparece na tela): " nova; echo
+      [ -n "$nova" ] || { rm -f "$RCLONE_FILE"; die "frase vazia."; }
+      printf '%s' "$nova" > "$FRASE_FILE"; chmod 600 "$FRASE_FILE"
+      say "Frase guardada neste servidor."
+    else
+      openssl rand -base64 33 | tr -d '\n' > "$FRASE_FILE"; chmod 600 "$FRASE_FILE"
+      say; say "════════════════════════════════════════════════════════════"
+      say "FRASE DAS CÓPIAS (aparece só agora). Anote no gerenciador de senhas:"; say
+      say "    $(cat "$FRASE_FILE")"; say
+      say "Sem ela NÃO dá para abrir as cópias do Drive. Nunca cole no chat."
+      say "════════════════════════════════════════════════════════════"
+      if [ "${APQR_YES:-}" != 1 ]; then read -r -p "Digite 'guardei' quando tiver anotado: " ok; [ "$ok" = guardei ] || { rm -f "$FRASE_FILE" "$RCLONE_FILE"; die "cancelado: nada foi configurado. Rode de novo."; }; fi
+    fi
+  else
+    say "A frase das cópias já existe neste servidor (mantida)."
+  fi
+
+  say "Testando envio ao Drive..."
+  local t; t="$(mktemp)"; echo "teste apqr $(stamp)" > "$t"
+  gpg_pass --symmetric --cipher-algo AES256 -o "$t.gpg" "$t"
+  rc mkdir "$(rc_base)/diarias" && rc mkdir "$(rc_base)/mensais" || die "não consegui criar a pasta ONEUP-backups/apqr no Drive."
+  rc copyto "$t.gpg" "$(rc_base)/teste.gpg" || die "falha ao enviar o arquivo de teste."
+  rc deletefile "$(rc_base)/teste.gpg" || true
+  rm -f "$t" "$t.gpg"
+  say "Pronto. As cópias vão para o Drive em ONEUP-backups/apqr/ (30 diárias + 12 mensais), cifradas (AES-256)."
+  say "Envie a primeira agora com: apqr backup-externo agora"
+}
+
+cmd_backup_externo_agora() {
+  external_configured || die "cópia no Drive não configurada. Rode: apqr backup-externo configurar"
+  local fresh=1; [ "${1:-}" = "--sem-backup-novo" ] && fresh=0
+  ensure_state
+  if [ "$fresh" = 1 ]; then "$APQR_DIR/backup.sh" || die "a cópia local falhou; nada foi enviado."; fi
+  local dir name pkg size remote_size month base
+  dir="$(latest_backup_dir)"; [ -n "$dir" ] || die "não há cópia local para enviar."
+  name="$(basename "$dir").tar.gpg"; pkg="$(mktemp -d)/$name"; base="$(rc_base)"
+  tar -C "$(dirname "$dir")" -cf - "$(basename "$dir")" | gpg_pass --symmetric --cipher-algo AES256 -o "$pkg"
+  gpg_pass -d "$pkg" | tar -t > /dev/null || { rm -rf "$(dirname "$pkg")"; die "o pacote cifrado não passou na conferência; nada foi enviado."; }
+  size="$(stat -c %s "$pkg")"
+  if ! rc copyto "$pkg" "$base/diarias/$name"; then
+    rm -rf "$(dirname "$pkg")"; check externo_falhou "cópia no Drive" fail "o envio da cópia ao Google Drive FALHOU. Rode: apqr backup-externo agora"; die "falha ao enviar ao Drive."
+  fi
+  remote_size="$(rc lsf --format s "$base/diarias/$name" 2>/dev/null | head -n1 || true)"
+  rm -rf "$(dirname "$pkg")"
+  if [ "$remote_size" != "$size" ]; then check externo_falhou "cópia no Drive" fail "a cópia no Drive foi enviada mas o tamanho não confere. Rode: apqr backup-externo agora"; die "tamanho no Drive ($remote_size) diferente do enviado ($size)."; fi
+  month="$(date +%Y-%m)"
+  if ! rc lsf "$base/mensais/" 2>/dev/null | grep -q "^apqr-$month-"; then rc copyto "$base/diarias/$name" "$base/mensais/$name" || true; fi
+  rc lsf "$base/diarias/" 2>/dev/null | grep '^apqr-' | sort | head -n "-$KEEP_EXTERNAL_DAILY" | while read -r old; do rc deletefile "$base/diarias/$old" || true; done
+  rc lsf "$base/mensais/" 2>/dev/null | grep '^apqr-' | sort | head -n "-$KEEP_EXTERNAL_MONTHLY" | while read -r old; do rc deletefile "$base/mensais/$old" || true; done
+  printf '%s %s\n' "$(now)" "$name" > "$STATE/ultimo-externo"
+  check externo_falhou "cópia no Drive" ok
+  say "$(stamp) cópia no Drive ok: $name ($((size/1024)) KB, cifrada)"
+}
+
+cmd_backup_externo_listar() {
+  external_configured || die "cópia no Drive não configurada."
+  say "Diárias:"; rc lsf --format sp "$(rc_base)/diarias/" | sort -t';' -k2 | sed 's/^/  /'
+  say "Mensais:"; rc lsf --format sp "$(rc_base)/mensais/" | sort -t';' -k2 | sed 's/^/  /'
+}
+
+cmd_restaurar_externo() {
+  need_root "$@"
+  [ -f "$RCLONE_FILE" ] || die "a conexão com o Drive não está configurada neste servidor. Rode: apqr backup-externo configurar (se for servidor novo, responda 'sim' à pergunta da frase)."
+  local name="${1:-}" base work out
+  [ -n "$name" ] || { say "Uso: apqr restaurar-externo <nome>   (veja os nomes com: apqr backup-externo listar)"; exit 1; }
+  base="$(rc_base)"; work="$BACKUP_ROOT/recuperado"; mkdir -p "$work"; chmod 700 "$work"
+  out="$(mktemp -d)"
+  rc copyto "$base/diarias/$name" "$out/$name" 2>/dev/null || rc copyto "$base/mensais/$name" "$out/$name" || die "não achei '$name' no Drive."
+  if [ ! -f "$FRASE_FILE" ]; then
+    local f; read -r -s -p "A frase das cópias não está neste servidor. Digite a do seu gerenciador de senhas: " f; echo
+    FRASE_TMP="$(mktemp)"; chmod 600 "$FRASE_TMP"; printf '%s' "$f" > "$FRASE_TMP"
+  fi
+  if ! gpg_pass -d "$out/$name" | tar -x -C "$work"; then [ -n "${FRASE_TMP:-}" ] && rm -f "$FRASE_TMP"; die "não consegui abrir a cópia (frase errada ou arquivo corrompido)."; fi
+  [ -n "${FRASE_TMP:-}" ] && rm -f "$FRASE_TMP"
+  rm -rf "$out"
+  local dir="$work/${name%.tar.gpg}"
+  [ -d "$dir" ] || die "pacote inesperado."
+  say "Cópia baixada e aberta em: $dir"
+  cmd_restaurar "$dir"
+}
+
+# ───────────────────────── avisos e vigia ─────────────────────────
+cmd_alertas() {
+  need_root "$@"
+  case "${1:-}" in
+    configurar)
+      say "Avisos no WhatsApp (CallMeBot). Pode usar o MESMO número e a MESMA chave do restaurante."
+      local phone key
+      if [ -n "${APQR_ALERT_PHONE:-}" ]; then phone="$APQR_ALERT_PHONE"; key="${APQR_ALERT_APIKEY:-}"; else
+        read -r -p "Seu WhatsApp com DDI e DDD, só números (ex.: 5561999999999): " phone
+        read -r -s -p "Chave (apikey) do CallMeBot: " key; echo
+      fi
+      [[ "$phone" =~ ^[0-9]{10,15}$ ]] || die "número inválido (só dígitos, com 55 e DDD)."
+      [ -n "$key" ] || die "chave vazia."
+      umask 077; printf 'ALERT_PHONE=%s\nALERT_APIKEY=%s\n' "$phone" "$key" > "$ALERTAS_FILE"
+      say "Salvo. Teste com: apqr alerta teste";;
+    *) say "Uso: apqr alertas configurar"; exit 1;;
+  esac
+}
+
+cmd_alerta() {
+  need_root "$@"
+  [ "${1:-}" = teste ] || { say "Uso: apqr alerta teste"; exit 1; }
+  alerts_configured || die "avisos não configurados. Rode: apqr alertas configurar"
+  if send_alert "✅ APQR: teste de aviso ($(stamp)). Se você leu isto, os alertas funcionam."; then say "Enviado. Confira seu WhatsApp."; else die "não consegui enviar (confira a chave e a internet do servidor)."; fi
+}
+
+cmd_vigia() {
+  ensure_state
+  # Durante a atualização/restauração não avisa "fora do ar" à toa. Manutenção parada há mais de 30 min vira aviso.
+  if [ -f "$STATE/manutencao" ]; then
+    local since; since="$(cat "$STATE/manutencao")"
+    if [ $(( $(now) - since )) -lt 1800 ]; then check manutencao_longa "manutenção encerrada" ok; exit 0; fi
+    check manutencao_longa "manutenção encerrada" fail "o sistema está em manutenção há mais de 30 minutos (atualização travada?). Rode: apqr status"
+    exit 0
+  fi
+  check manutencao_longa "manutenção encerrada" ok
+
+  local j fora=1 url
+  j="$(health_json)"
+  if ! printf '%s' "$j" | grep -q '"ok":true'; then sleep "${APQR_VIGIA_RETRY:-20}"; j="$(health_json)"; fi
+  printf '%s' "$j" | grep -q '"ok":true' && fora=0
+  if [ "$fora" = 1 ]; then check fora_do_ar "sistema no ar" fail "o APQR está FORA DO AR. Rode: apqr status e apqr logs"; else check fora_do_ar "sistema no ar" ok; fi
+
+  url="$(envget APP_URL)"
+  if [ "$fora" = 0 ] && [ "${APQR_SKIP_PUBLIC:-}" != 1 ] && [ -n "$url" ]; then
+    if curl -fsS -m 15 -o /dev/null "$url/api/health/live" || { sleep "${APQR_VIGIA_RETRY:-20}"; curl -fsS -m 15 -o /dev/null "$url/api/health/live"; }; then
+      check site_inacessivel "site acessível pela internet" ok
+    else
+      check site_inacessivel "site acessível pela internet" fail "o APQR roda, mas o site NÃO abre pela internet ($url). Veja o Nginx/certificado: apqr certificado"
+    fi
+  fi
+
+  local pct; pct="$(disk_percent)"
+  if [ "${pct:-0}" -gt "$DISK_LIMIT_PERCENT" ]; then check disco "disco com espaço" fail "disco do servidor em ${pct}% (limite ${DISK_LIMIT_PERCENT}%). Apague arquivos antigos ou aumente o disco."; else check disco "disco com espaço" ok; fi
+
+  local cd
+  if cd="$(cert_days)"; then
+    if [ "$cd" -lt "$CERT_MIN_DAYS" ]; then check certificado "certificado HTTPS" fail "o certificado HTTPS vence em $cd dias. Rode: apqr certificado"; else check certificado "certificado HTTPS" ok; fi
+  fi
+
+  local last; last="$(latest_backup_dir)"
+  if [ -z "$last" ]; then check backup_velho "cópia recente" fail "não existe nenhuma cópia de segurança. Rode: apqr backup"
+  elif [ "$(age_hours "$last")" -gt "$BACKUP_MAX_AGE_HOURS" ]; then check backup_velho "cópia recente" fail "a última cópia de segurança tem mais de ${BACKUP_MAX_AGE_HOURS} horas ($(age_hours "$last") h). Rode: apqr backup"
+  else check backup_velho "cópia recente" ok; fi
+  if [ -f "$STATE/backup-falhou" ]; then check backup_falhou "cópia de segurança" fail "a última cópia de segurança FALHOU. Rode: apqr backup"; else check backup_falhou "cópia de segurança" ok; fi
+
+  if external_configured; then
+    local ext; ext="$(cat "$STATE/ultimo-externo" 2>/dev/null | cut -d' ' -f1 || true)"
+    if [ -z "$ext" ] || [ $(( ($(now) - ext) / 3600 )) -gt "$BACKUP_MAX_AGE_HOURS" ]; then check externo_velho "cópia no Drive recente" fail "a última cópia no Google Drive tem mais de ${BACKUP_MAX_AGE_HOURS} horas. Rode: apqr backup-externo agora"; else check externo_velho "cópia no Drive recente" ok; fi
+  fi
+}
+
+# ───────────────────────── atualizar ─────────────────────────
+DEPLOY_FILES=(docker-compose.yml backup.sh restore.sh)
+
+snapshot_deploy() {
+  local d="$STATE/anterior"; rm -rf "$d"; mkdir -p "$d"
+  local f
+  for f in "${DEPLOY_FILES[@]}" .env; do [ -f "$APQR_DIR/$f" ] && cp -p "$APQR_DIR/$f" "$d/$f"; done
+  [ -d "$APQR_DIR/postgres-init" ] && cp -a "$APQR_DIR/postgres-init" "$d/postgres-init"
+  return 0
+}
+restore_deploy() {
+  local d="$STATE/anterior" f
+  for f in "${DEPLOY_FILES[@]}" .env; do [ -f "$d/$f" ] && cp -p "$d/$f" "$APQR_DIR/$f"; done
+  if [ -d "$d/postgres-init" ]; then rm -rf "$APQR_DIR/postgres-init"; cp -a "$d/postgres-init" "$APQR_DIR/postgres-init"; fi
+  return 0
+}
+sync_deploy() {
+  local rel="$1" f
+  for f in "${DEPLOY_FILES[@]}"; do
+    [ -f "$rel/deploy/$f" ] || continue
+    cp "$rel/deploy/$f" "$APQR_DIR/$f.novo" && chmod --reference="$APQR_DIR/$f" "$APQR_DIR/$f.novo" 2>/dev/null || true
+    mv -f "$APQR_DIR/$f.novo" "$APQR_DIR/$f"
+  done
+  case "${DEPLOY_FILES[*]}" in *backup.sh*) chmod 755 "$APQR_DIR/backup.sh" "$APQR_DIR/restore.sh";; esac
+  if [ -d "$rel/deploy/postgres-init" ]; then rm -rf "$APQR_DIR/postgres-init"; cp -a "$rel/deploy/postgres-init" "$APQR_DIR/postgres-init"; fi
+}
+install_cli() { # troca este próprio comando por uma cópia nova, de forma segura (arquivo novo + rename)
+  local rel="$1"
+  [ -f "$rel/deploy/apqr" ] || return 0
+  cp "$rel/deploy/apqr" "$BIN_DIR/apqr.novo" && chmod 755 "$BIN_DIR/apqr.novo" && mv -f "$BIN_DIR/apqr.novo" "$BIN_DIR/apqr"
+}
+
+rollback() {
+  local prev="$1" backup_dir="$2" why="$3"
+  say; say "⚠ A versão nova não funcionou ($why). Voltando para a versão anterior ($prev)..."
+  restore_deploy
+  envset APQR_VERSION "$prev"
+  if ! "$DOCKER" image inspect "oneup/apqr:$prev" > /dev/null 2>&1; then
+    say "  reconstruindo a imagem da versão anterior..."
+    compose build app >> "$STATE/ultimo-erro.log" 2>&1 || true
+  fi
+  compose up -d app >> "$STATE/ultimo-erro.log" 2>&1 || true
+  if wait_health "" 90; then
+    say "✔ Voltou: a versão anterior ($prev) está no ar. Seus dados foram preservados."
+    say "  Mandei o motivo para o log: $STATE/ultimo-erro.log. Me envie as últimas linhas dele no chat."
+    logline "atualização revertida para $prev: $why"
+    send_alert "🟠 APQR: a atualização falhou e o sistema VOLTOU para a versão $prev. Está no ar." || true
+    return 1
+  fi
+  say "✘ A versão anterior também NÃO ligou. Seus dados estão na cópia de segurança:"
+  say "    $backup_dir"
+  say "  Para restaurar: apqr restaurar $(basename "$backup_dir")"
+  logline "FALHA TOTAL na atualização; restaurar $backup_dir"
+  send_alert "🔴 APQR: a atualização falhou e a versão anterior NÃO ligou. Fora do ar. Cópia: $(basename "$backup_dir"). Rode: apqr status" || true
+  return 2
+}
+
+cmd_atualizar() {
+  need_root "$@"
+  local forcar=0; [ "${1:-}" = "--forcar" ] && forcar=1
+  [ -d "$REPO/.git" ] || die "repositório do GitHub não encontrado em $REPO. Rode antes o instalador (instalar.sh)."
+  mkdir -p "$STATE"; ensure_state
+  exec 9> "$STATE/atualizar.lock"; flock -n 9 || die "já existe uma atualização em andamento."
+
+  say "1/7 Buscando a versão mais nova no GitHub..."
+  retry3 git -C "$REPO" fetch --tags --prune origin main > "$STATE/ultimo-fetch.log" 2>&1 || { tail -n 5 "$STATE/ultimo-fetch.log"; die "não consegui falar com o GitHub (chave de leitura, internet ou repositório). Nada foi alterado."; }
+  local new_commit new_version cur_version cur_commit
+  new_commit="$(git -C "$REPO" rev-parse origin/main)"
+  new_version="$(git -C "$REPO" show origin/main:VERSION 2>/dev/null | tr -d '[:space:]')"
+  [[ "$new_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || die "o GitHub não tem um arquivo VERSION válido. Nada foi alterado."
+  cur_version="$(envget APQR_VERSION)"; cur_commit="$(cat "$STATE/commit-atual" 2>/dev/null || true)"
+
+  if [ "$new_version" = "$cur_version" ] && [ "$new_commit" = "$cur_commit" ] && [ "$forcar" = 0 ]; then
+    say "Já está na versão mais nova ($cur_version). Nada a fazer."; exit 0
+  fi
+  if [ "$forcar" = 0 ]; then
+    if [ "$new_version" = "$cur_version" ]; then
+      die "o GitHub tem o código v$new_version, igual à versão em uso, mas não tenho certeza de que é o mesmo código. Peça ao Claude para publicar uma versão nova (ou use: apqr atualizar --forcar)."
+    fi
+    if [ "$(printf '%s\n%s\n' "$cur_version" "$new_version" | sort -V | head -n1)" != "$cur_version" ]; then
+      die "a versão do GitHub ($new_version) é MAIS ANTIGA que a em uso ($cur_version). Nada foi alterado. (Para voltar de propósito, use: apqr atualizar --forcar)"
+    fi
+  fi
+  say "   em uso: $cur_version  →  nova: $new_version"
+
+  say "2/7 Conferindo o pacote novo..."
+  local tmp rel; rel="$APQR_DIR/releases/apqr-$new_version"; tmp="$APQR_DIR/releases/.novo-$$"
+  rm -rf "$tmp"; mkdir -p "$tmp"
+  git -C "$REPO" archive --format=tar origin/main | tar -x -C "$tmp"
+  local need
+  for need in Dockerfile server/package.json web/dist/index.html VERSION deploy/docker-compose.yml deploy/backup.sh; do
+    [ -e "$tmp/$need" ] || { rm -rf "$tmp"; die "o pacote do GitHub está incompleto (falta $need). Nada foi alterado."; }
+  done
+  [ "$(tr -d '[:space:]' < "$tmp/VERSION")" = "$new_version" ] || { rm -rf "$tmp"; die "VERSION inconsistente no pacote."; }
+
+  say "3/7 Cópia de segurança (sem cópia, não atualiza)..."
+  local before backup_dir; before="$(latest_backup_dir)"
+  if ! "$APQR_DIR/backup.sh"; then rm -rf "$tmp"; die "a cópia de segurança falhou. NÃO atualizei nada. Resolva isso primeiro (apqr status)."; fi
+  backup_dir="$(latest_backup_dir)"
+  [ -n "$backup_dir" ] && [ "$backup_dir" != "$before" ] || { rm -rf "$tmp"; die "não encontrei a cópia recém-feita. NÃO atualizei nada."; }
+  now > "$STATE/backup-ok"; rm -f "$STATE/backup-falhou"
+
+  manut_on
+  trap 'manut_off' EXIT
+  : > "$STATE/ultimo-erro.log"
+  snapshot_deploy
+  rm -rf "$rel"; mv "$tmp" "$rel"
+
+  say "4/7 Preparando e construindo a versão $new_version (só dependências de produção; pode levar alguns minutos)..."
+  sync_deploy "$rel"
+  if ! compose config -q >> "$STATE/ultimo-erro.log" 2>&1; then
+    rm -rf "$rel"; rollback "$cur_version" "$backup_dir" "configuração do Docker inválida"; exit $?
+  fi
+  envset APQR_VERSION "$new_version"
+  if ! retry3 compose build app >> "$STATE/ultimo-erro.log" 2>&1; then
+    tail -n 15 "$STATE/ultimo-erro.log" | sed 's/^/   | /'
+    rm -rf "$rel"; rollback "$cur_version" "$backup_dir" "a construção da versão nova falhou"; exit $?
+  fi
+
+  say "5/7 Trocando para a versão nova (o sistema fica fora do ar por alguns segundos)..."
+  compose up -d app >> "$STATE/ultimo-erro.log" 2>&1 || true
+
+  say "6/7 Esperando o sistema responder (até 90 s)..."
+  if ! wait_health "$new_version" 90; then
+    tail -n 15 "$STATE/ultimo-erro.log" | sed 's/^/   | /'
+    compose logs --tail 20 app 2>&1 | sed 's/^/   | /' | tee -a "$STATE/ultimo-erro.log" || true
+    rm -rf "$rel"; rollback "$cur_version" "$backup_dir" "o sistema novo não respondeu em 90 s"; exit $?
+  fi
+
+  say "7/7 Conferindo..."
+  local live; live="$(json_version "$(health_json)")"
+  if [ "$live" != "$new_version" ]; then rollback "$cur_version" "$backup_dir" "a versão no ar ($live) não é a baixada ($new_version)"; exit $?; fi
+  printf '%s\n' "$new_commit" > "$STATE/commit-atual"
+  printf '%s\n' "$cur_version" > "$STATE/versao-anterior"
+  install_cli "$rel"
+  # mantém só a versão atual, a anterior e mais uma; apaga o resto (pasta e imagem)
+  local old
+  { ls -1d "$APQR_DIR"/releases/apqr-* 2>/dev/null || true; } | sed 's#.*/apqr-##' | sort -V | head -n "-3" | while read -r old; do
+    rm -rf "$APQR_DIR/releases/apqr-$old"; "$DOCKER" image rm "oneup/apqr:$old" > /dev/null 2>&1 || true
+  done
+  manut_off
+  logline "atualizado $cur_version → $new_version (commit ${new_commit:0:8}); cópia: $(basename "$backup_dir")"
+  say
+  say "✔ Atualizado: $cur_version → $new_version. No ar e conferido."
+  say "  Cópia de segurança feita antes: $(basename "$backup_dir")"
+  say "  Se algo parecer errado: apqr voltar   (volta para $cur_version em segundos)"
+}
+
+cmd_voltar() {
+  need_root "$@"
+  local prev cur; prev="$(cat "$STATE/versao-anterior" 2>/dev/null || true)"; cur="$(envget APQR_VERSION)"
+  [ -n "$prev" ] || die "não sei qual era a versão anterior."
+  [ -d "$APQR_DIR/releases/apqr-$prev" ] || die "a pasta da versão $prev não existe mais."
+  say "Voltando de $cur para $prev (os dados não mudam; as mudanças de banco só acrescentam)."
+  manut_on; trap manut_off EXIT
+  envset APQR_VERSION "$prev"
+  compose up -d app
+  wait_health "" 90 || { envset APQR_VERSION "$cur"; die "a versão $prev não respondeu. Voltei a configuração para $cur."; }
+  rm -f "$STATE/commit-atual"
+  logline "voltou manualmente $cur → $prev"
+  say "✔ Versão $prev no ar. Para tentar a nova de novo mais tarde: apqr atualizar --forcar"
+}
+
+# ───────────────────────── demais comandos ─────────────────────────
+cmd_logs() {
+  need_root "$@"
+  case "${1:-}" in
+    -f|--seguir) compose logs --tail 50 -f app;;
+    db|banco)    compose logs --tail 100 db;;
+    *)           compose logs --tail 100 app;;
+  esac
+}
+cmd_reiniciar() {
+  need_root "$@"
+  say "Reiniciando o APQR..."; manut_on; trap manut_off EXIT
+  compose restart app
+  if wait_health "" 90; then say "✔ No ar."; else die "não voltou em 90 s. Veja: apqr logs"; fi
+}
+cmd_certificado() {
+  local cd host; host="$(host_of_url)"
+  if cd="$(cert_days)"; then say "O certificado de $host vence em $cd dias (a renovação é automática, pelo certbot)."; else say "Não consegui ler o certificado de $host."; fi
+  if [ "${1:-}" = testar-renovacao ]; then need_root "$@"; certbot renew --dry-run; else say "Para testar a renovação automática: apqr certificado testar-renovacao"; fi
+}
+cmd_acessos() {
+  need_root "$@"
+  say "Entradas no sistema (últimas 24 h, do registro do app):"
+  local l; l="$(compose logs --since 24h app 2>/dev/null | grep '"route":"/api/auth/login"' || true)"
+  say "  tentativas de login: $(printf '%s' "$l" | grep -c . || true)"
+  say "  com sucesso ....... $(printf '%s' "$l" | grep -c '"status":200' || true)"
+  say "  senha errada ...... $(printf '%s' "$l" | grep -c '"status":401' || true)"
+  say "  bloqueadas ........ $(printf '%s' "$l" | grep -c '"status":429' || true)"
+  say "  últimas 10:"; printf '%s\n' "$l" | tail -n 10 | sed -E 's/.*"t":"([^"]*)".*"status":([0-9]+).*/    \1  status \2/' || true
+}
+cmd_versao() {
+  say "Em execução ..... $(json_version "$(health_json)")"
+  say "Configurada ..... $(envget APQR_VERSION)"
+  say "Anterior ........ $(cat "$STATE/versao-anterior" 2>/dev/null || echo '—')"
+  if [ -d "$REPO/.git" ]; then say "No GitHub ....... $(git -C "$REPO" show origin/main:VERSION 2>/dev/null | tr -d '[:space:]') (última busca; 'apqr atualizar' busca de novo)"; fi
+}
+
+cmd_ajuda() {
+  cat <<'EOF'
+apqr — administração do APQR
+
+  apqr status                      como está agora (no ar, versão, cópias, cadeado, memória, disco)
+  apqr atualizar                   baixa a versão nova do GitHub, faz cópia antes e volta sozinho se não ligar
+  apqr voltar                      volta para a versão anterior (em segundos)
+  apqr versao                      versões em uso / anterior / no GitHub
+
+  apqr backup                      cópia do banco e dos arquivos agora (automática todo dia às 03:40; guarda 14 dias)
+  apqr restaurar <cópia>           volta o banco para uma cópia (faz cópia do estado atual antes; pede confirmação)
+  apqr backup-externo configurar   liga a cópia cifrada diária no Google Drive (uma vez)
+  apqr backup-externo agora        envia uma cópia cifrada ao Drive agora
+  apqr backup-externo listar       mostra as cópias que estão no Drive
+  apqr restaurar-externo <nome>    baixa do Drive, abre e restaura
+
+  apqr alertas configurar          liga os avisos no seu WhatsApp (CallMeBot) — uma vez
+  apqr alerta teste                manda um aviso de teste
+
+  apqr logs [db|-f]                últimas linhas do registro do app (db = banco; -f = acompanhar)
+  apqr reiniciar                   reinicia o app e espera responder
+  apqr certificado [testar-renovacao]   validade do cadeado HTTPS
+  apqr acessos                     logins das últimas 24 h
+EOF
+}
+
+main() {
+  local cmd="${1:-ajuda}"; shift || true
+  case "$cmd" in
+    status) cmd_status "$@";;
+    atualizar) cmd_atualizar "$@";;
+    voltar) cmd_voltar "$@";;
+    versao|versão) cmd_versao "$@";;
+    backup) cmd_backup "$@";;
+    restaurar) cmd_restaurar "$@";;
+    backup-externo) cmd_backup_externo "$@";;
+    restaurar-externo) cmd_restaurar_externo "$@";;
+    alertas) cmd_alertas "$@";;
+    alerta) cmd_alerta "$@";;
+    vigia) cmd_vigia "$@";;
+    logs) cmd_logs "$@";;
+    reiniciar) cmd_reiniciar "$@";;
+    certificado) cmd_certificado "$@";;
+    acessos) cmd_acessos "$@";;
+    ajuda|-h|--help|help) cmd_ajuda;;
+    *) say "Comando desconhecido: $cmd"; say; cmd_ajuda; exit 1;;
+  esac
+}
+main "$@"

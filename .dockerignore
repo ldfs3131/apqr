@@ -1,0 +1,10 @@
+**/node_modules
+**/data
+*.db*
+.git
+.env
+**/.env
+*.csv
+backups
+deploy
+e2e

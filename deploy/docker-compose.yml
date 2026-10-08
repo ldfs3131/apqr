@@ -1,0 +1,69 @@
+# APQR · produção no VPS (pasta /opt/oneup/apqr)
+#
+#   Internet → HTTPS → Caddy (proxy, pasta /opt/oneup/proxy) → 127.0.0.1:3000 → APQR → PostgreSQL (rede interna)
+#
+# - Nada aqui fica exposto à internet: o app escuta só em 127.0.0.1 e o banco não publica porta nenhuma.
+# - Nomes fixos do projeto e dos volumes: renomear a pasta NÃO "perde" os dados.
+# - Segredos e versão ficam no arquivo .env ao lado deste (modelo: .env.example).
+name: apqr
+
+x-logs: &logs
+  driver: json-file
+  options: { max-size: "10m", max-file: "5" }   # evita que os logs encham o disco
+
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_ADMIN_PASSWORD:?defina POSTGRES_ADMIN_PASSWORD no .env}
+      POSTGRES_DB: apqr
+      # Usado só na PRIMEIRA criação do banco, pelo script em ./postgres-init (cria o usuário limitado do app).
+      APQR_DB_PASSWORD: ${APQR_DB_PASSWORD:?defina APQR_DB_PASSWORD no .env}
+    volumes:
+      - apqr_pgdata:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d apqr"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    mem_limit: 512m
+    logging: *logs
+
+  app:
+    build: ./releases/apqr-${APQR_VERSION:?defina APQR_VERSION no .env}
+    image: oneup/apqr:${APQR_VERSION}
+    restart: unless-stopped
+    depends_on:
+      db: { condition: service_healthy }
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      APP_VERSION: ${APQR_VERSION}   # o /api/health devolve esta versão (o comando apqr confere)
+      NODE_OPTIONS: --max-old-space-size=512
+      # Usuário limitado (sem superpoderes): a Row-Level Security vale sempre.
+      DATABASE_URL: postgres://apqr_app:${APQR_DB_PASSWORD}@db:5432/apqr
+      DATABASE_SSL: "0"            # conexão interna do Docker (o PostgreSQL do contêiner não usa SSL)
+      TRUST_PROXY: "1"             # atrás do Caddy: IP real do usuário (limites de tentativa por pessoa)
+      FILES_DIR: /data/files
+      APP_URL: ${APP_URL:?defina APP_URL no .env}
+      DEFAULT_TENANT: ${DEFAULT_TENANT:-pollyana-lyra}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      ADMIN_NAME: ${ADMIN_NAME:-Administrador ONE UP}
+      SMTP_URL: ${SMTP_URL:-}
+      MAIL_FROM: ${MAIL_FROM:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      AI_MODEL: ${AI_MODEL:-}
+    ports:
+      - "127.0.0.1:${APQR_PORT:-3000}:3000"
+    volumes:
+      - apqr_files:/data
+    mem_limit: 768m
+    logging: *logs
+
+volumes:
+  apqr_pgdata: { name: apqr_pgdata }
+  apqr_files: { name: apqr_files }
