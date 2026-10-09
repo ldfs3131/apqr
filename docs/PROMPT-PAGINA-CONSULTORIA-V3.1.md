@@ -89,3 +89,17 @@
 - Versão do APQR **3.1.0**, com testes da página e de segurança.
 - O Lucas roda `apqr atualizar` no servidor.
 - Termo novo no Drive, mesmo link.
+
+## 8. Correções da auditoria (incorporadas)
+1. **Hero escuro × cabeçalho:** sobre o hero, o cabeçalho fica transparente, com uma versão clara do logo (azul do logo convertido para branco, rosé mantido). Ao rolar, volta ao fundo claro com o logo original.
+2. **Foto no palco escuro:** remover o fundo cinza claro da foto da mesa (a mesa preta e os livros ficam), para a professora "sentar" no azul-marinho. Se o recorte não ficar perfeito no cabelo, a alternativa é a foto em cartão com brilho rosé por trás. Não usar moldura clara, que viraria um retângulo de luz no palco escuro.
+3. **Hero no celular:** título primeiro, depois a foto com o selo "1ª colocada" e o mapa do edital. O print flutuante aparece só no computador. No celular ele ficaria ilegível e o print entra na seção de depoimentos.
+4. **Prints com marca de terceiros:** no print do dióxido de titânio, a miniatura do story mostra a professora com camiseta de marca parceira. Recortar ou desfocar a miniatura. Revisar todos os prints para nenhum logo ou nome de empresa aparecer.
+5. **Cards de depoimento da marca** (Carla, Nathalia, Rose): desfocar também a foto e o nome dentro da arte.
+6. **Acessibilidade dos prints:** cada imagem com texto alternativo transcrevendo a mensagem, sem o nome, para leitores de tela e para o Google.
+7. **Peso:** prints em WebP otimizado, carregados só ao chegar perto da tela. A primeira tela continua leve.
+8. **Vídeo:** capa da miniatura do YouTube (liberar `i.ytimg.com` só para imagem) e player sem cookies apenas ao tocar.
+9. **Termo de Adesão:** além do preço, incluir o teto do bônus (até R$ 150 no trimestral e até R$ 200 no semestral, por nível de meta), para a página e o termo dizerem o mesmo.
+10. **Simulador APQR:** trocar a semântica de "abas" por botões com estado pressionado (mais correto para leitores de tela).
+11. **Imagem de compartilhamento:** refazer no visual do novo hero escuro.
+12. **Consistência de preço:** nenhum resto de R$ 697, R$ 627,30 ou "10% no Pix" em página, termo, mensagens do WhatsApp, eventos de Pixel/GA4 ou imagem de compartilhamento.
