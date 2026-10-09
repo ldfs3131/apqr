@@ -35,3 +35,17 @@ Depois de editar: `npm run build:web`, subir a versão no `VERSION` e publicar n
 - Legenda de cores em lista no celular; foto de "Quem conduz" sem cortar a cabeça; botão da barra fixa sem quebrar linha.
 - Imagem de compartilhamento em JPG 1200×630 (WhatsApp/Instagram); endereço canônico com barra final.
 - Numerais de preço alinhados; texto neutro no bônus ("Quem faz a sua parte").
+
+---
+
+# APQR v3.0.4 — página /consultoria em outro nível (movimento com função)
+
+- Barra de leitura nas cores do Método APQR (o leitor avança como um tópico, do vermelho ao consolidado).
+- Hero com entrada coreografada: título palavra por palavra, foto revelada, mapa do edital subindo.
+- "Como funciona": linha do tempo que se preenche com a rolagem; etapas em cápsula (símbolo do logo) acendem ao serem alcançadas.
+- Simulador APQR: um tópico ("Farmacologia") muda de estado ao tocar em A, P, Q, R (anda sozinho até a pessoa interagir), com o mapa do edital inteiro reagindo.
+- "+10" com contagem; cápsula do logo como desenho de fundo na faixa de resultados.
+- Depoimentos: etiquetas de resultado; no computador, duas faixas deslizando (param com o mouse); no celular, carrossel com pontos.
+- Fotos em arco (cápsula) com revelação; grifo desenhado em "direção"; brilho nos botões; FAQ abre suave.
+- Card de investimento fixo no computador, com contorno vivo.
+- Quem ativou "reduzir movimento" vê a página estática e completa. Sem bibliotecas externas.
