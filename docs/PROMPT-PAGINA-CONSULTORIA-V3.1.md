@@ -75,7 +75,7 @@
 **Texto:**
 - **Título:** "Cumpra as metas. Receba de volta."
 - **Corpo:** "Nos 30 dias de plataforma, a sua meta de estudo é acompanhada automaticamente. Cumpriu? Até R$ 200 do valor da consultoria voltam para você como crédito para seguir na mentoria ou na plataforma."
-- **Linha pequena:** "Crédito aplicado na contratação da mentoria ou da plataforma, conforme as regras do Termo de Adesão."
+- **Linha pequena:** "O valor depende do nível de meta alcançado e do plano escolhido para continuar (até R$ 150 no trimestral, até R$ 200 no semestral). Crédito aplicado na contratação, conforme as regras do Termo de Adesão."
 
 **Posição:** ao lado do card de investimento, no lugar da caixa atual. Repetido em uma linha no card ("+ até R$ 200 de volta em crédito").
 
