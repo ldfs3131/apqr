@@ -103,3 +103,11 @@
 10. **Simulador APQR:** trocar a semântica de "abas" por botões com estado pressionado (mais correto para leitores de tela).
 11. **Imagem de compartilhamento:** refazer no visual do novo hero escuro.
 12. **Consistência de preço:** nenhum resto de R$ 697, R$ 627,30 ou "10% no Pix" em página, termo, mensagens do WhatsApp, eventos de Pixel/GA4 ou imagem de compartilhamento.
+
+## 9. Regra final do bônus (decidida em 09/10)
+- **Metas** (medidas nas 4 semanas após o encontro): Constância (pacto em 3 de 4 semanas, mínimo 5 h/semana), Questões (300 no período, lançadas no dia, até 150/dia), Plano de ação (≥ 70%).
+- **Medalhas:** 1 meta Bronze, 2 metas Prata, 3 metas Ouro.
+- **Crédito só nas turmas da mentoria:** trimestral R$ 30 / 60 / 100; semestral R$ 60 / 120 / 200.
+- **Alternativa:** em vez do crédito, +2 meses grátis no Plano Anual da plataforma (para quem tem medalha).
+- **Validade e aplicação:** 15 dias a partir da emissão; aplicação manual após aprovação do relatório pela professora.
+- **Manchete mantida:** "Até R$ 200 de volta".

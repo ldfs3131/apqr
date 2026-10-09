@@ -613,26 +613,9 @@ p{margin:0}
 .cashback::before{content:"";position:absolute;right:-90px;top:-90px;width:240px;height:240px;border-radius:50%;background:radial-gradient(closest-side,rgba(217,169,46,.22),transparent)}
 .cb-kicker{font-size:13.5px;font-weight:600;color:#9A7313}
 .cashback h3{font-size:clamp(26px,2.6vw,32px);margin-top:4px}
-.cb-track{list-style:none;margin:24px 0 18px;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) minmax(0,1.5fr);align-items:center;position:relative}
-.cb-track::before,.cb-track::after{content:"";position:absolute;left:6%;right:22%;top:14px;height:2px;background:var(--line);border-radius:2px}
-.cb-track::after{background:linear-gradient(90deg,var(--st-3),var(--gold));transform:scaleX(1);transform-origin:0 50%}
-.motion .cb-track::after{transform:scaleX(0);transition:transform 1.6s cubic-bezier(.4,.1,.2,1) .2s}
-.motion .cashback.in .cb-track::after{transform:scaleX(1)}
-.cb-track li{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:8px}
-.cb-track i{width:38px;height:24px;border-radius:999px;border:2px solid var(--st-3);background:var(--st-3);transition:background .4s,border-color .4s,transform .4s;transition-delay:calc(.25s + var(--i) * .35s)}
-.motion .cb-track i{background:#fff;border-color:var(--line)}
-.motion .cashback.in .cb-track i{background:var(--st-3);border-color:var(--st-3);transform:scale(1.05)}
-.cb-track span{font-size:12.5px;color:var(--muted);white-space:nowrap}
-.cb-track em{font-style:normal}
-.wk-s{display:none}
-.top.on-dark.tinted{background:rgba(10,31,66,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.cb-medal{justify-self:end}
-.cb-medal b{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;text-align:center;padding:10px;font:700 18px/1.05 var(--display);color:#4A3606;
+.motion .motion .cashback.in .motion .motion .cashback.in .top.on-dark.tinted{background:rgba(10,31,66,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
   background:radial-gradient(circle at 35% 30%,#FBE7A8,#E2B23A 55%,#B9861C);box-shadow:0 14px 30px -12px rgba(185,134,28,.7),inset 0 0 0 3px rgba(255,255,255,.45)}
-.cb-medal span{font-size:12.5px;font-weight:600;color:#7A5A0F}
-.motion .cb-medal b{transform:scale(.6);opacity:.35;transition:transform .7s cubic-bezier(.3,1.6,.5,1) 1.7s,opacity .4s 1.7s}
-.motion .cashback.in .cb-medal b{transform:none;opacity:1}
-.cb-text{color:var(--ink);font-size:16px}
+.motion .motion .cashback.in .cb-text{color:var(--ink);font-size:16px}
 .cb-fine{margin-top:10px;font-size:13px;color:var(--muted)}
 .price-back{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-size:13.5px;font-weight:600;color:#7A5A0F;background:rgba(217,169,46,.14);padding:7px 12px;border-radius:999px}
 .price-back span{width:10px;height:10px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FBE7A8,#E2B23A 60%,#B9861C)}
@@ -659,14 +642,33 @@ p{margin:0}
   .proofs{columns:auto;display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;margin-inline:calc(var(--gutter) * -1);padding:4px var(--gutter) 10px;scrollbar-width:none}
   .proofs::-webkit-scrollbar{display:none}
   .proof{flex:0 0 80%;scroll-snap-align:center;margin:0}
-  .cb-track{grid-template-columns:repeat(4,minmax(0,1fr)) 96px;column-gap:4px}
-  .cb-track::before,.cb-track::after{right:30%}
-  .cb-track i{width:30px;height:20px}
-  .cb-track span{font-size:11.5px}
-  .wk-l{display:none}
-  .wk-s{display:inline}
-  .cb-medal b{width:76px;height:76px;font-size:15px}
-}
+          }
+/* bônus v3.1.1: 3 metas → medalha → crédito por plano */
+.cb-lead{color:var(--muted);font-size:15.5px;margin-top:8px}
+.cb-goals{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:10px;counter-reset:g}
+.cb-goals li{display:grid;grid-template-columns:34px minmax(0,1fr);gap:2px 12px;align-items:start;padding:12px 14px;border-radius:14px;background:var(--mist);transition:background .5s,box-shadow .5s;transition-delay:calc(.2s + var(--i) * .3s)}
+.cb-goals li::before{counter-increment:g;content:counter(g);width:34px;height:22px;border-radius:999px;display:grid;place-items:center;font:600 14px/1 var(--display);color:#fff;background:var(--st-3);margin-top:1px}
+.cb-goals b{display:block;color:var(--navy);font-size:15.5px}
+.cb-goals span{display:block;font-size:14px;color:var(--muted);grid-column:2}
+.motion .cashback.in .cb-goals li{background:#EEF6F1}
+.cb-medals{margin-top:18px;border:1px solid var(--line);border-radius:16px;overflow:hidden;font-size:14.5px}
+.cb-row{display:grid;grid-template-columns:minmax(0,1.15fr) repeat(3,minmax(0,1fr));align-items:center;text-align:center}
+.cb-row > span{padding:11px 6px;font-variant-numeric:lining-nums tabular-nums;color:var(--ink)}
+.cb-row + .cb-row{border-top:1px solid var(--line)}
+.cb-plan{text-align:left;padding-left:14px!important;color:var(--muted)!important;font-size:13.5px}
+.cb-headrow{background:#FBF8FB}
+.medal{display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:700;color:var(--navy)!important;font-size:13.5px}
+.medal small{font-weight:500;color:var(--muted);font-size:11.5px}
+.medal i{width:30px;height:30px;border-radius:50%;box-shadow:inset 0 0 0 2px rgba(255,255,255,.5),0 6px 14px -6px rgba(0,0,0,.45)}
+.m-bronze i{background:radial-gradient(circle at 35% 30%,#F3C9A0,#C07A3E 60%,#8A5124)}
+.m-prata i{background:radial-gradient(circle at 35% 30%,#FFFFFF,#BFC6D1 60%,#8C95A3)}
+.m-ouro i{background:radial-gradient(circle at 35% 30%,#FBE7A8,#E2B23A 60%,#B9861C)}
+.motion .medal i{transform:scale(.4);opacity:.3;transition:transform .6s cubic-bezier(.3,1.6,.5,1),opacity .4s;transition-delay:calc(1.1s + var(--i) * .25s)}
+.motion .cashback.in .medal i{transform:none;opacity:1}
+.cb-best{background:linear-gradient(90deg,rgba(217,169,46,0),rgba(217,169,46,.12))}
+.cb-best strong{color:#7A5A0F;font-size:16px}
+.cb-alt{margin-top:14px;font-size:14.5px;color:var(--ink)}
+.cb-alt span{color:var(--rose);margin-right:6px}
 </style>
 </head><body>
 
@@ -984,15 +986,24 @@ p{margin:0}
       <div class="cashback" id="cashback">
         <p class="cb-kicker">Bônus por rendimento</p>
         <h3>Cumpra as metas. Receba de volta.</h3>
-        <ol class="cb-track" aria-label="Os 30 dias de plataforma, semana a semana">
-          <li style="--i:0"><i aria-hidden="true"></i><span><em class="wk-l">Semana</em><em class="wk-s" aria-hidden="true">Sem.</em> 1</span></li>
-          <li style="--i:1"><i aria-hidden="true"></i><span><em class="wk-l">Semana</em><em class="wk-s" aria-hidden="true">Sem.</em> 2</span></li>
-          <li style="--i:2"><i aria-hidden="true"></i><span><em class="wk-l">Semana</em><em class="wk-s" aria-hidden="true">Sem.</em> 3</span></li>
-          <li style="--i:3"><i aria-hidden="true"></i><span><em class="wk-l">Semana</em><em class="wk-s" aria-hidden="true">Sem.</em> 4</span></li>
-          <li class="cb-medal" style="--i:4"><b>Até R$ 200</b><span>de volta em crédito</span></li>
+        <p class="cb-lead">Nas 4 semanas depois do encontro, a plataforma mede três metas. Cada meta cumprida sobe a sua medalha.</p>
+        <ol class="cb-goals">
+          <li style="--i:0"><b>Constância</b><span>Pacto de estudo cumprido em 3 das 4 semanas, com no mínimo 5 h por semana.</span></li>
+          <li style="--i:1"><b>Questões</b><span>300 questões no período, lançadas no dia (até 150 por dia).</span></li>
+          <li style="--i:2"><b>Plano de ação</b><span>Pelo menos 70% das ações do seu plano cumpridas.</span></li>
         </ol>
-        <p class="cb-text">Nos 30 dias de plataforma, a sua meta de estudo é acompanhada automaticamente. Cumpriu? Até R$ 200 do valor da consultoria voltam para você como crédito para seguir na mentoria ou na plataforma.</p>
-        <p class="cb-fine">O valor depende do nível de meta alcançado e do plano escolhido para continuar: até R$ 150 no trimestral e até R$ 200 no semestral. Crédito aplicado na contratação, conforme o Termo de Adesão.</p>
+        <div class="cb-medals" role="table" aria-label="Crédito de volta por medalha e plano da turma">
+          <div class="cb-row cb-headrow" role="row">
+            <span role="columnheader" class="cb-plan">Crédito na turma</span>
+            <span role="columnheader" class="medal m-bronze" style="--i:0"><i aria-hidden="true"></i>Bronze<small>1 meta</small></span>
+            <span role="columnheader" class="medal m-prata" style="--i:1"><i aria-hidden="true"></i>Prata<small>2 metas</small></span>
+            <span role="columnheader" class="medal m-ouro" style="--i:2"><i aria-hidden="true"></i>Ouro<small>3 metas</small></span>
+          </div>
+          <div class="cb-row" role="row"><span role="rowheader" class="cb-plan">Trimestral</span><span role="cell">R$ 30</span><span role="cell">R$ 60</span><span role="cell">R$ 100</span></div>
+          <div class="cb-row cb-best" role="row"><span role="rowheader" class="cb-plan">Semestral</span><span role="cell">R$ 60</span><span role="cell">R$ 120</span><span role="cell"><strong>R$ 200</strong></span></div>
+        </div>
+        <p class="cb-alt"><span aria-hidden="true">✦</span>Prefere seguir só com a plataforma? Troque o crédito por <strong>+2 meses grátis no Plano Anual</strong>.</p>
+        <p class="cb-fine">Medição automática nas 4 semanas após o encontro. O bônus vale por 15 dias a partir da emissão e é aplicado na contratação, depois que a professora aprova o seu relatório. Não é convertido em dinheiro. Regras completas no Termo de Adesão.</p>
       </div>
     </div>
 

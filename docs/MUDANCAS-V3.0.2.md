@@ -61,3 +61,11 @@ Depois de editar: `npm run build:web`, subir a versão no `VERSION` e publicar n
 - **Bônus:** "Cumpra as metas. Receba de volta.", com trilha das 4 semanas e medalha "Até R$ 200". Regra: até R$ 150 no trimestral e até R$ 200 no semestral, em crédito.
 - **Simulador APQR:** botões com estado pressionado (acessibilidade).
 - **Termo de Adesão** refeito (versão 2) com R$ 597 e o teto do bônus.
+
+---
+
+# APQR v3.1.1 — bônus com a regra real do sistema
+
+- Bloco do bônus refeito: 3 metas (Constância, Questões, Plano de ação) → medalha Bronze, Prata ou Ouro → crédito por plano da turma (trimestral R$ 30/60/100; semestral R$ 60/120/200). Alternativa: +2 meses grátis no Plano Anual.
+- Validade de 15 dias e aplicação após aprovação do relatório pela professora, na página e no Termo (versão 3).
+- Removida a frase anterior "até R$ 150 no trimestral".
