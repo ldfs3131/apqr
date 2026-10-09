@@ -26,13 +26,17 @@ describe('página /consultoria', () => {
     assert.match(csp, /fonts\.googleapis\.com/);
     assert.match(csp, /script-src 'self' 'unsafe-inline'/);
     assert.match(csp, /frame-ancestors 'none'/);
+    assert.match(csp, /frame-src https:\/\/www\.youtube-nocookie\.com;/);
+    assert.match(csp, /img-src [^;]*https:\/\/i\.ytimg\.com/);
     assert.equal(r.headers['x-frame-options'], 'DENY');
   });
 
   test('serve as imagens e responde 404 para imagem inexistente', async () => {
-    const r = await request(app).get('/consultoria/img/hero.webp').expect(200);
+    const r = await request(app).get('/consultoria/img/hero-cut.webp').expect(200);
     assert.match(r.headers['content-type'], /image\/webp/);
     await request(app).get('/consultoria/img/nao-existe.webp').expect(404);
+    const pr = await request(app).get('/consultoria/img/prints/passei-35.webp').expect(200);
+    assert.match(pr.headers['content-type'], /image\/webp/);
   });
 
   test('o app do APQR continua com a política original', async () => {

@@ -49,3 +49,15 @@ Depois de editar: `npm run build:web`, subir a versão no `VERSION` e publicar n
 - Fotos em arco (cápsula) com revelação; grifo desenhado em "direção"; brilho nos botões; FAQ abre suave.
 - Card de investimento fixo no computador, com contorno vivo.
 - Quem ativou "reduzir movimento" vê a página estática e completa. Sem bibliotecas externas.
+
+---
+
+# APQR v3.1.0 — página /consultoria: palco escuro, prova real e "dinheiro de volta"
+
+- **Preço:** R$ 597, o mesmo no Pix e no cartão (até 3x de R$ 199 sem juros), em card, barra do celular, FAQ e eventos de Pixel/GA4.
+- **Abertura:** palco azul-marinho com a professora recortada sobre o fundo (mesa e livros mantidos). Ao redor, flutuando: selo "1ª colocada · Anvisa Área 2", print real "Profa. Passeeeiii" e o mapa do edital. Leve profundidade com o mouse no computador. O cabeçalho fica transparente, com logo claro, sobre o palco.
+- **Prova real:** "1º lugar e +10 aprovados dentro das vagas" na Anvisa e vídeo da entrevista com a 1ª colocada (YouTube sem cookies, carrega só ao tocar). A política da página libera apenas `youtube-nocookie.com` e `i.ytimg.com`.
+- **Depoimentos:** prints originais (nomes, fotos e listas com desfoque leve; miniatura com marca de terceiros desfocada). Conversas dentro de um celular desenhado, artes da marca com sombra. Toque para ampliar. Carrossel com pontos no celular. Texto alternativo com a transcrição de cada mensagem.
+- **Bônus:** "Cumpra as metas. Receba de volta.", com trilha das 4 semanas e medalha "Até R$ 200". Regra: até R$ 150 no trimestral e até R$ 200 no semestral, em crédito.
+- **Simulador APQR:** botões com estado pressionado (acessibilidade).
+- **Termo de Adesão** refeito (versão 2) com R$ 597 e o teto do bônus.

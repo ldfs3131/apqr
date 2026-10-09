@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Figtree:wght@400;500;600;700&family=Allura&display=swap">
-<link rel="preload" as="image" href="img/hero.webp" fetchpriority="high">
+<link rel="preload" as="image" href="img/hero-cut.webp" fetchpriority="high">
 
 <style>
 /* Layout: consultório de alto padrão. Coluna editorial assimétrica, foto como protagonista,
@@ -452,9 +452,9 @@ p{margin:0}
 .sim-steps b{width:64px;height:44px;border-radius:999px;display:grid;place-items:center;font:600 30px/1 var(--display);color:var(--navy);background:var(--mist);transition:background .35s,color .35s}
 .sim-steps strong{display:block;color:var(--navy);font-size:17.5px;line-height:1.3}
 .sim-steps span span{display:block;font-size:15px;color:var(--muted);margin-top:2px}
-.sim-steps button[aria-selected="true"]{border-color:var(--c);box-shadow:0 18px 36px -26px rgba(15,43,87,.55)}
-.sim-steps button[aria-selected="true"] b{background:var(--c);color:var(--white)}
-.sim-steps button[data-s="2"][aria-selected="true"] b{color:#3D3306}
+.sim-steps button[aria-pressed="true"]{border-color:var(--c);box-shadow:0 18px 36px -26px rgba(15,43,87,.55)}
+.sim-steps button[aria-pressed="true"] b{background:var(--c);color:var(--white)}
+.sim-steps button[data-s="2"][aria-pressed="true"] b{color:#3D3306}
 .sim-hint{font-size:13.5px;color:var(--muted);margin-top:4px;padding-left:4px}
 .letters{display:none}
 
@@ -509,15 +509,173 @@ p{margin:0}
   .marquee{display:none}
   .quotes[hidden]{display:block!important}
 }
+/* =====================================================================
+   v3.1 · palco escuro na abertura, prova real (prints e vídeo), bônus "de volta"
+   ===================================================================== */
+:root{--stage:#0A1F42;--stage-2:#0E2A57;--on-dark:#C9D1E3;--on-dark-2:#9FAAC4}
+
+/* cabeçalho sobre o palco escuro */
+.brand{display:block}
+.brand img{width:148px}
+.logo-light{display:none}
+.top{transition:background .35s,border-color .35s}
+.top.on-dark{background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none;border-bottom-color:transparent}
+.top.on-dark .logo-dark{display:none}
+.top.on-dark .logo-light{display:block}
+.top.on-dark .btn-primary{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.28);box-shadow:none}
+.top.on-dark .btn-primary:hover{background:#fff;color:var(--navy)}
+
+/* palco */
+.hero{position:relative;overflow:hidden;isolation:isolate;margin-top:-72px;padding-block:calc(72px + clamp(28px,5vw,72px)) clamp(64px,8vw,112px);
+  background:radial-gradient(60% 70% at 78% 62%,#1D4280 0%,rgba(29,66,128,0) 62%),linear-gradient(180deg,var(--stage) 0%,var(--stage-2) 100%);color:#fff}
+.hero-glow{position:absolute;width:640px;height:640px;right:6%;top:18%;border-radius:50%;background:radial-gradient(closest-side,rgba(217,143,196,.32),rgba(217,143,196,0));z-index:-1;pointer-events:none}
+.caps-stage{width:min(760px,62vw);right:-10%;top:-14%;z-index:-1}
+.caps-stage .c1{stroke:rgba(231,191,218,.16)}
+.caps-stage .c2{stroke:rgba(255,255,255,.06)}
+.hero .wrap{grid-template-columns:minmax(0,5.5fr) minmax(0,6.5fr);align-items:center}
+.hero h1{font-size:clamp(40px,4.6vw,64px)}
+.hero h1{color:#fff}
+.hero h1 em{color:var(--rose-soft)}
+.hero .kicker{color:var(--rose-soft)}
+.hero .kicker::before{background:rgba(231,191,218,.55)}
+.hero .lead{color:var(--on-dark)}
+.hero .note{color:var(--on-dark-2)}
+.btn-light{background:#fff;color:var(--navy);box-shadow:0 18px 40px -18px rgba(0,0,0,.6);position:relative;overflow:hidden;isolation:isolate}
+.btn-light:hover{background:var(--rose-soft);transform:translateY(-1px)}
+.link-light{color:#fff;text-decoration-color:rgba(231,191,218,.7)}
+.link-light:hover{text-decoration-color:var(--rose-soft)}
+
+.hero-visual{position:relative;aspect-ratio:6/5;padding:0;max-width:none}
+.hero-cut{position:absolute;left:-14%;bottom:0;width:128%;max-width:none;height:auto;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 13%,#000 87%,transparent 100%),linear-gradient(180deg,#000 80%,transparent 100%);-webkit-mask-composite:source-in;
+  mask-image:linear-gradient(90deg,transparent 0,#000 13%,#000 87%,transparent 100%),linear-gradient(180deg,#000 80%,transparent 100%);mask-composite:intersect}
+.float{position:absolute;margin:0;will-change:translate}
+.seal{z-index:3;left:0;top:12%;display:flex;align-items:center;gap:12px;padding:12px 18px 12px 12px;border-radius:999px;color:#fff;
+  background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 18px 40px -22px rgba(0,0,0,.6)}
+.seal svg{color:var(--gold);flex:none}
+.seal strong{display:block;font-size:15px;line-height:1.2}
+.seal small{display:block;font-size:12.5px;color:var(--on-dark)}
+.print-float{z-index:2;right:-7%;top:4%;width:37%;rotate:2.5deg}
+.print-float img{width:100%;border-radius:16px;box-shadow:0 30px 60px -24px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.08)}
+.print-float figcaption{margin-top:8px;font-size:12px;color:var(--on-dark-2);text-align:right}
+.hero-visual .map{z-index:2;left:-13%;bottom:4%;width:min(290px,46%)}
+.motion .hero-cut{animation:rise 1.2s cubic-bezier(.2,.75,.1,1) .15s both}
+.motion .seal{animation:fadeUp .9s cubic-bezier(.2,.75,.1,1) .95s both}
+.motion .print-float{animation:rise 1s cubic-bezier(.2,.75,.1,1) 1.1s both}
+
+/* prova real: resultados + vídeo */
+.results .wrap{grid-template-columns:minmax(0,5.4fr) minmax(0,6fr);align-items:center}
+.stats{display:flex;gap:clamp(28px,4vw,56px);align-items:flex-end;flex-wrap:wrap}
+.stat{margin:0}
+.stat b{display:flex;align-items:flex-start;font:600 clamp(96px,11vw,150px)/.82 var(--display);color:#fff;font-variant-numeric:lining-nums}
+.stat b small{font-size:.42em;line-height:1;color:var(--rose-soft);margin-top:.16em}
+.stat > span{display:block;margin-top:12px;font-size:14.5px;color:#B9C2D6}
+.results h2{font-size:clamp(26px,2.6vw,34px);margin-top:30px;max-width:18em}
+.also{list-style:none;margin:22px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.also li{font-size:13.5px;color:#E6EAF3;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);padding:6px 12px;border-radius:999px}
+.video{margin:0}
+.video-btn{all:unset;box-sizing:border-box;cursor:pointer;display:block;position:relative;width:100%;aspect-ratio:16/9;border-radius:22px;overflow:hidden;background:#000;box-shadow:0 40px 80px -40px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.1)}
+.video-btn img{width:100%;height:100%;object-fit:cover;transform:scale(1.36);transition:transform .6s}
+.video-btn:hover img{transform:scale(1.4)}
+.video-btn::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,31,66,0) 40%,rgba(10,31,66,.55))}
+.video-btn:focus-visible{outline:3px solid var(--rose-soft);outline-offset:4px}
+.play{position:absolute;left:50%;top:50%;z-index:1;width:78px;height:78px;margin:-39px 0 0 -39px;border-radius:50%;display:grid;place-items:center;background:#fff;color:var(--navy);box-shadow:0 12px 30px -8px rgba(0,0,0,.5)}
+.play svg{margin-left:4px}
+.motion .play::before{content:"";position:absolute;inset:-10px;border-radius:50%;border:2px solid rgba(255,255,255,.55);animation:ring 2.4s ease-out infinite}
+@keyframes ring{from{transform:scale(.85);opacity:1}to{transform:scale(1.35);opacity:0}}
+.video iframe{display:block;width:100%;aspect-ratio:16/9;border:0;border-radius:22px;background:#000}
+.video-cap{margin-top:16px;display:flex;flex-direction:column;gap:2px}
+.video-cap strong{color:#fff;font-size:17px}
+.video-cap span{color:#9FAAC4;font-size:14px}
+
+/* depoimentos: prints reais */
+.quotes-head .intro{margin-top:12px}
+.proofs{columns:3 290px;column-gap:26px;margin-top:clamp(36px,4vw,56px)}
+.proof{break-inside:avoid;margin:0 0 30px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.zoom{all:unset;box-sizing:border-box;cursor:zoom-in;display:block;width:100%;transition:transform .35s}
+.zoom:hover{transform:translateY(-3px)}
+.zoom:focus-visible{outline:3px solid var(--royal);outline-offset:4px;border-radius:24px}
+.zoom img{width:100%;height:auto;display:block}
+.proof.chat .zoom{background:#14161C;padding:12px 10px;border-radius:36px;box-shadow:0 30px 60px -34px rgba(15,43,87,.6);position:relative}
+.proof.chat .zoom::before{content:"";position:absolute;top:5px;left:50%;width:60px;height:4px;margin-left:-30px;border-radius:4px;background:#2A2D36}
+.proof.chat .zoom img{border-radius:24px}
+.proof.art .zoom{border-radius:20px;overflow:hidden;box-shadow:0 30px 60px -34px rgba(15,43,87,.55),0 0 0 1px rgba(15,43,87,.06);background:#fff}
+.proof figcaption{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--navy);background:#fff;border:1px solid rgba(15,43,87,.08);padding:6px 12px 6px 10px;border-radius:999px}
+.proof figcaption::before{content:"";width:14px;height:7px;border-radius:999px;background:var(--rose)}
+.lightbox{border:0;padding:0;background:transparent;max-width:min(92vw,620px);max-height:94vh;overflow:visible}
+.lightbox::backdrop{background:rgba(8,18,38,.84);backdrop-filter:blur(4px)}
+.lightbox img{display:block;max-width:100%;max-height:88vh;width:auto;margin:0 auto;border-radius:16px;box-shadow:0 30px 80px -20px rgba(0,0,0,.7)}
+.lb-close{all:unset;cursor:pointer;position:absolute;right:0;top:-52px;width:42px;height:42px;border-radius:50%;background:#fff;color:var(--navy);display:grid;place-items:center;font-size:26px;line-height:1}
+.lb-close:focus-visible{outline:3px solid var(--rose-soft);outline-offset:3px}
+
+/* bônus: dinheiro de volta */
+.cashback{margin-top:34px;background:#fff;border-radius:var(--r-l);padding:clamp(22px,3vw,32px);border:1px solid rgba(15,43,87,.07);box-shadow:0 30px 60px -44px rgba(15,43,87,.5);position:relative;overflow:hidden}
+.cashback::before{content:"";position:absolute;right:-90px;top:-90px;width:240px;height:240px;border-radius:50%;background:radial-gradient(closest-side,rgba(217,169,46,.22),transparent)}
+.cb-kicker{font-size:13.5px;font-weight:600;color:#9A7313}
+.cashback h3{font-size:clamp(26px,2.6vw,32px);margin-top:4px}
+.cb-track{list-style:none;margin:24px 0 18px;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) minmax(0,1.5fr);align-items:center;position:relative}
+.cb-track::before,.cb-track::after{content:"";position:absolute;left:6%;right:22%;top:14px;height:2px;background:var(--line);border-radius:2px}
+.cb-track::after{background:linear-gradient(90deg,var(--st-3),var(--gold));transform:scaleX(1);transform-origin:0 50%}
+.motion .cb-track::after{transform:scaleX(0);transition:transform 1.6s cubic-bezier(.4,.1,.2,1) .2s}
+.motion .cashback.in .cb-track::after{transform:scaleX(1)}
+.cb-track li{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:8px}
+.cb-track i{width:38px;height:24px;border-radius:999px;border:2px solid var(--st-3);background:var(--st-3);transition:background .4s,border-color .4s,transform .4s;transition-delay:calc(.25s + var(--i) * .35s)}
+.motion .cb-track i{background:#fff;border-color:var(--line)}
+.motion .cashback.in .cb-track i{background:var(--st-3);border-color:var(--st-3);transform:scale(1.05)}
+.cb-track span{font-size:12.5px;color:var(--muted);white-space:nowrap}
+.cb-track em{font-style:normal}
+.wk-s{display:none}
+.top.on-dark.tinted{background:rgba(10,31,66,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.cb-medal{justify-self:end}
+.cb-medal b{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;text-align:center;padding:10px;font:700 18px/1.05 var(--display);color:#4A3606;
+  background:radial-gradient(circle at 35% 30%,#FBE7A8,#E2B23A 55%,#B9861C);box-shadow:0 14px 30px -12px rgba(185,134,28,.7),inset 0 0 0 3px rgba(255,255,255,.45)}
+.cb-medal span{font-size:12.5px;font-weight:600;color:#7A5A0F}
+.motion .cb-medal b{transform:scale(.6);opacity:.35;transition:transform .7s cubic-bezier(.3,1.6,.5,1) 1.7s,opacity .4s 1.7s}
+.motion .cashback.in .cb-medal b{transform:none;opacity:1}
+.cb-text{color:var(--ink);font-size:16px}
+.cb-fine{margin-top:10px;font-size:13px;color:var(--muted)}
+.price-back{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-size:13.5px;font-weight:600;color:#7A5A0F;background:rgba(217,169,46,.14);padding:7px 12px;border-radius:999px}
+.price-back span{width:10px;height:10px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FBE7A8,#E2B23A 60%,#B9861C)}
+
+@media (max-width:980px){
+  .hero .wrap{grid-template-columns:minmax(0,1fr)}
+  .hero-visual{max-width:640px;margin-inline:auto;width:100%}
+  .results .wrap{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:720px){
+  .hero{margin-top:-62px;padding-top:calc(62px + 24px)}
+  .brand img{width:124px}
+  .hero-visual{margin-inline:calc(var(--gutter) * -1);width:auto;max-width:none;aspect-ratio:4/3;margin-top:10px}
+  .print-float{display:none}
+  .seal{left:var(--gutter);top:2%;padding:9px 14px 9px 9px}
+  .seal svg{width:28px;height:28px}
+  .seal strong{font-size:13.5px}
+  .seal small{font-size:11.5px}
+  .hero-visual .map{position:relative;left:auto;bottom:auto;width:auto;margin:-20px var(--gutter) 0;top:auto}
+  .hero-visual{display:flex;flex-direction:column;justify-content:flex-end;aspect-ratio:auto;min-height:0}
+  .hero-cut{position:relative;left:auto;bottom:auto;margin-inline:-14%;width:128%}
+  .seal{position:absolute}
+  .caps-stage{width:520px;right:-260px;top:-60px}
+  .proofs{columns:auto;display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;margin-inline:calc(var(--gutter) * -1);padding:4px var(--gutter) 10px;scrollbar-width:none}
+  .proofs::-webkit-scrollbar{display:none}
+  .proof{flex:0 0 80%;scroll-snap-align:center;margin:0}
+  .cb-track{grid-template-columns:repeat(4,minmax(0,1fr)) 96px;column-gap:4px}
+  .cb-track::before,.cb-track::after{right:30%}
+  .cb-track i{width:30px;height:20px}
+  .cb-track span{font-size:11.5px}
+  .wk-l{display:none}
+  .wk-s{display:inline}
+  .cb-medal b{width:76px;height:76px;font-size:15px}
+}
 </style>
 </head><body>
 
 <div class="progress" id="progress" aria-hidden="true"></div>
 
 <!-- ====== CABEÇALHO ====== -->
-<header class="top" id="top">
+<header class="top on-dark" id="top">
   <div class="wrap">
-    <a href="#inicio" aria-label="Prof. Pollyana Lyra, início"><img src="img/logo-pollyana.png" alt="Pollyana Lyra" width="560" height="192"></a>
+    <a class="brand" href="#inicio" aria-label="Prof. Pollyana Lyra, início"><img class="logo-dark" src="img/logo-pollyana.png" alt="Pollyana Lyra" width="560" height="192"><img class="logo-light" src="img/logo-pollyana-light.png" alt="" width="560" height="192"></a>
     <a class="btn btn-primary" href="#investimento" data-ev="cta_header">Quero minha consultoria</a>
   </div>
 </header>
@@ -526,23 +684,31 @@ p{margin:0}
 
 <!-- ====== HERO ====== -->
 <section class="hero" aria-labelledby="h-hero">
+  <div class="hero-glow" aria-hidden="true"></div>
+  <svg class="caps caps-stage" viewBox="0 0 400 400" aria-hidden="true"><rect class="c2" x="30" y="148" width="340" height="104" rx="52"/><rect class="c1" x="148" y="30" width="104" height="340" rx="52"/></svg>
   <div class="wrap">
     <div class="hero-text">
       <p class="kicker">Consultoria individual para concursos de Farmácia</p>
       <h1 id="h-hero">O seu estudo, analisado por quem <em>já passou</em> por onde você quer chegar.</h1>
       <p class="lead">Um diagnóstico da sua rotina, um encontro individual com a Prof. Pollyana Lyra, um parecer escrito de direcionamento e 30 dias de acompanhamento na plataforma do Método APQR.</p>
       <div class="actions">
-        <a class="btn btn-primary" href="#investimento" data-ev="cta_hero">Quero minha consultoria</a>
-        <a class="link" href="#como-funciona">Ver como funciona</a>
+        <a class="btn btn-light" href="#investimento" data-ev="cta_hero">Quero minha consultoria</a>
+        <a class="link link-light" href="#como-funciona">Ver como funciona</a>
       </div>
       <p class="note"><span class="dot" aria-hidden="true"></span>Atendimento individual com agenda reduzida.</p>
     </div>
 
-    <div class="hero-visual">
-      <div class="hero-photo">
-        <img src="img/hero.webp" alt="Prof. Pollyana Lyra sentada à mesa, entre livros de Farmacologia, Toxicologia e Farmacognosia" width="1800" height="1200" fetchpriority="high">
+    <div class="hero-visual" id="stage">
+      <img class="hero-cut" src="img/hero-cut.webp" alt="Prof. Pollyana Lyra sentada à mesa, entre livros de Farmacologia, Toxicologia e Farmacognosia" width="1500" height="1000" fetchpriority="high">
+      <div class="float seal" data-depth="14">
+        <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="14" r="10" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M11.5 22.5 9 32l8-4 8 4-2.5-9.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><text x="17" y="18.5" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor" font-family="Georgia,serif">1º</text></svg>
+        <span><strong>1ª colocada · Anvisa</strong><small>Área 2 · aluna da Prof. Pollyana</small></span>
       </div>
-      <figure class="map" aria-label="Exemplo de mapa do edital no Método APQR">
+      <figure class="float print-float" data-depth="26">
+        <img src="img/hero-print.webp" alt="Mensagem real de aluna: Profa., passeeeiii! Obrigada por todo ensinamento, se não fosse a mentoria não teria passado." width="650" height="493" loading="eager">
+        <figcaption>Mensagem real · nome ocultado</figcaption>
+      </figure>
+      <figure class="float map" data-depth="18" aria-label="Exemplo de mapa do edital no Método APQR">
         <div class="map-head">
           <span class="map-title">Seu edital, tópico por tópico</span>
           <span class="map-tag">exemplo</span>
@@ -626,11 +792,11 @@ p{margin:0}
         <div class="sim-grid" aria-hidden="true"><p><span>O edital inteiro, no mesmo mapa</span><span>exemplo</span></p><div id="sim-grid"></div></div>
       </div>
       <div>
-        <div class="sim-steps" role="tablist" aria-label="Etapas do Método APQR">
-          <button role="tab" aria-selected="false" data-s="1" style="--c:var(--st-1)"><b aria-hidden="true">A</b><span><strong>Assimilação</strong><span>Entender o conteúdo de verdade, não só ler.</span></span></button>
-          <button role="tab" aria-selected="false" data-s="2" style="--c:var(--st-2)"><b aria-hidden="true">P</b><span><strong>Produção de material</strong><span>Criar a sua revisão, no seu formato.</span></span></button>
-          <button role="tab" aria-selected="false" data-s="3" style="--c:var(--st-3)"><b aria-hidden="true">Q</b><span><strong>Questões</strong><span>Treinar com o estilo da banca.</span></span></button>
-          <button role="tab" aria-selected="false" data-s="4" style="--c:var(--st-4)"><b aria-hidden="true">R</b><span><strong>Revisão</strong><span>Voltar no tempo certo, até consolidar.</span></span></button>
+        <div class="sim-steps" role="group" aria-label="Etapas do Método APQR">
+          <button type="button" aria-pressed="false" data-s="1" style="--c:var(--st-1)"><b aria-hidden="true">A</b><span><strong>Assimilação</strong><span>Entender o conteúdo de verdade, não só ler.</span></span></button>
+          <button type="button" aria-pressed="false" data-s="2" style="--c:var(--st-2)"><b aria-hidden="true">P</b><span><strong>Produção de material</strong><span>Criar a sua revisão, no seu formato.</span></span></button>
+          <button type="button" aria-pressed="false" data-s="3" style="--c:var(--st-3)"><b aria-hidden="true">Q</b><span><strong>Questões</strong><span>Treinar com o estilo da banca.</span></span></button>
+          <button type="button" aria-pressed="false" data-s="4" style="--c:var(--st-4)"><b aria-hidden="true">R</b><span><strong>Revisão</strong><span>Voltar no tempo certo, até consolidar.</span></span></button>
         </div>
         <p class="sim-hint">Toque em cada letra para acompanhar o tópico.</p>
       </div>
@@ -677,18 +843,24 @@ p{margin:0}
 <section class="sec results" aria-labelledby="h-results">
   <svg class="caps caps-results" viewBox="0 0 400 400" aria-hidden="true"><rect class="c2" x="30" y="148" width="340" height="104" rx="52"/><rect class="c1" x="148" y="30" width="104" height="340" rx="52"/></svg>
   <div class="wrap">
-    <div>
-      <p class="big" aria-hidden="true"><small>+</small><span id="count">10</span></p>
-      <h2 id="h-results">aprovados dentro das vagas no último concurso da Anvisa</h2>
-      <p class="sub">Especialista em Regulação e Vigilância Sanitária, Área 2.</p>
-    </div>
-    <div>
-      <div class="results-list">
-        <div><strong>Secretarias de Saúde</strong><span>Aprovações em concursos estaduais e municipais pelo país.</span></div>
-        <div><strong>Quadros militares farmacêuticos</strong><span>Carreiras de farmacêutico nas forças militares.</span></div>
-        <div><strong>Conselhos e residências</strong><span>CRFs e programas de residência em Farmácia.</span></div>
+    <div class="res-text">
+      <div class="stats" aria-hidden="true">
+        <p class="stat"><b>1º</b><span>lugar geral</span></p>
+        <p class="stat"><b><small>+</small><span id="count">10</span></b><span>aprovados dentro das vagas</span></p>
       </div>
+      <h2 id="h-results"><span class="sr-only">1º lugar e mais de 10 aprovados dentro das vagas </span>no último concurso da Anvisa</h2>
+      <p class="sub">Especialista em Regulação e Vigilância Sanitária, Área 2. A 1ª colocada foi aluna da Prof. Pollyana.</p>
+      <ul class="also">
+        <li>Secretarias de Saúde</li><li>Quadros militares farmacêuticos</li><li>Conselhos e residências</li>
+      </ul>
       <p class="fine">Resultados de alunos da mentoria e dos materiais da Prof. Pollyana.</p>
+    </div>
+    <div class="video" id="video">
+      <button type="button" class="video-btn" data-id="77r7LhMw9EM" aria-label="Assistir à entrevista com a 1ª colocada da Anvisa">
+        <img src="https://i.ytimg.com/vi/77r7LhMw9EM/hqdefault.jpg" alt="" width="480" height="360" loading="lazy">
+        <span class="play" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 26 26"><path d="M8 5.5v15l12.5-7.5z" fill="currentColor"/></svg></span>
+      </button>
+      <p class="video-cap"><strong>Assista à entrevista com a 1ª colocada</strong><span>Canal Revise Farmácia · YouTube</span></p>
     </div>
   </div>
 </section>
@@ -698,53 +870,79 @@ p{margin:0}
   <div class="wrap">
     <div class="quotes-head">
       <h2 class="h2" id="h-quotes">O que dizem os alunos da Prof. Pollyana</h2>
+      <p class="intro">Mensagens reais, do jeito que chegaram. Toque em uma para ampliar.</p>
     </div>
-    <div class="quotes" tabindex="0" aria-label="Depoimentos de alunos">
-      <figure class="quote featured">
-        <span class="chip">7º SESAU-AL</span>
-        <blockquote>Passar em um concurso sempre foi um sonho meu, mas a cada prova parecia que esse dia não chegaria. Essa realidade mudou quando entrei na mentoria. Tudo isso trouxe minha aprovação.</blockquote>
-        <figcaption><span class="mono" aria-hidden="true">CM</span><cite><b>C. M.</b>7º lugar na SESAU-AL e 11º no FUNSAÚDE-CE (1ª fase)</cite></figcaption>
+    <div class="proofs" id="proofs">
+      <figure class="proof chat">
+        <button type="button" class="zoom" data-src="img/prints/passei-35.webp" aria-label="Ampliar: 35º no resultado preliminar">
+          <img src="img/prints/passei-35.webp" alt="Mensagem real de aluna: Profa., passeeeiii! Obrigada por todo ensinamento, se não fosse a mentoria não teria passado. Gratidão por tudo. Agora é esperar o resultado final. O preliminar fiquei em 35º." width="746" height="1340" loading="lazy" decoding="async">
+        </button>
+        <figcaption>35º no resultado preliminar</figcaption>
       </figure>
-      <figure class="quote">
-        <span class="chip">35º no preliminar</span>
-        <blockquote>Professora, passei! Obrigada por todo ensinamento. Se não fosse a mentoria, não teria passado.</blockquote>
-        <figcaption><span class="mono" aria-hidden="true">ML</span><cite><b>M. L.</b>35º lugar no resultado preliminar</cite></figcaption>
+      <figure class="proof chat">
+        <button type="button" class="zoom" data-src="img/prints/crf-mt.webp" aria-label="Ampliar: 7º lugar · CRF-MT">
+          <img src="img/prints/crf-mt.webp" alt="Mensagem real de aluna, com a lista de classificação: 7º lugar, CRF-MT. Professora, eu terminei de estudar na plataforma o curso de perícia criminal. Estudo todos os dias em casa. O seu livro de redação ajudou muito na prova do CRF." width="746" height="1340" loading="lazy" decoding="async">
+        </button>
+        <figcaption>7º lugar · CRF-MT</figcaption>
       </figure>
-      <figure class="quote">
-        <span class="chip">1º UFPR · USP</span>
-        <blockquote>Com a mentoria consegui me sentir mais confiante e organizar a rotina de estudo. Os encontros e as dicas são de grande importância para o desenvolvimento dos estudos.</blockquote>
-        <figcaption><span class="mono" aria-hidden="true">NS</span><cite><b>N. F. S.</b>Aprovada nas residências da UFPR (1º lugar na etapa 1), Sírio-Libanês (2º), UNISA (3º) e USP</cite></figcaption>
+      <figure class="proof chat">
+        <button type="button" class="zoom" data-src="img/prints/betim-preco.webp" aria-label="Ampliar: Aprovado · Betim">
+          <img src="img/prints/betim-preco.webp" alt="Mensagem real de aluno: Professoraaaa, eu acho que a gente venceu. Acho que Betim vai ser nosso. Minha noite foi a maior das cotas. Lembro da última mensagem que você me falou: você precisa pagar o preço. E eu paguei." width="760" height="1149" loading="lazy" decoding="async">
+        </button>
+        <figcaption>Aprovado · Betim</figcaption>
       </figure>
-      <figure class="quote">
-        <span class="chip">Aprovado em Betim</span>
-        <blockquote>Lembro da última mensagem que você me falou: você precisa pagar o preço. E eu paguei.</blockquote>
-        <figcaption><span class="mono" aria-hidden="true">T</span><cite><b>T.</b>Aprovado em Betim</cite></figcaption>
+      <figure class="proof art">
+        <button type="button" class="zoom" data-src="img/prints/card-carla.webp" aria-label="Ampliar: 7º SESAU-AL · 11º FUNSAÚDE-CE">
+          <img src="img/prints/card-carla.webp" alt="Depoimento de aluna: Passar em um concurso sempre foi um sonho meu, mas a cada prova e resultado parecia que esse dia não chegaria. Essa realidade mudou quando entrei na mentoria da professora Pollyana. Aprovada: 7º lugar SESAU-AL e 11º FUNSAÚDE-CE (primeira fase)." width="760" height="778" loading="lazy" decoding="async">
+        </button>
+        <figcaption>7º SESAU-AL · 11º FUNSAÚDE-CE</figcaption>
       </figure>
-      <figure class="quote">
-        <span class="chip">Foco e planejamento</span>
-        <blockquote>Eu entrei na mentoria totalmente perdida. Consegui melhorar meu foco, memorização e planejamento, e aprendi a lidar com minhas dificuldades.</blockquote>
-        <figcaption><span class="mono" aria-hidden="true">RC</span><cite><b>R. C.</b>Aluna da mentoria</cite></figcaption>
+      <figure class="proof chat">
+        <button type="button" class="zoom" data-src="img/prints/usp.webp" aria-label="Ampliar: Aprovada · USP">
+          <img src="img/prints/usp.webp" alt="Mensagem real de aluna: Passeiii na USP, Polly. Muito obrigada pela mentoria, com as dicas maravilhosas que dava. Me ajudou muito, me deu confiança para brigar por essa vaga." width="720" height="1055" loading="lazy" decoding="async">
+        </button>
+        <figcaption>Aprovada · USP</figcaption>
       </figure>
-      <figure class="quote">
-        <span class="chip">7º CRF-MT</span>
-        <blockquote>7º lugar no CRF-MT. O seu livro de redação ajudou muito na prova.</blockquote>
-        <figcaption><span class="mono" aria-hidden="true">DR</span><cite><b>D. T. R.</b>Aprovada no CRF-MT</cite></figcaption>
+      <figure class="proof chat">
+        <button type="button" class="zoom" data-src="img/prints/betim-vagas.webp" aria-label="Ampliar: Nas vagas · Betim">
+          <img src="img/prints/betim-vagas.webp" alt="Mensagem real de aluna: Professora, eu estou nas vagas de Betim. Chego em BH sexta para a segunda fase. Eu agradeço imensamente aquele que a senhora postou com provas da Fumarc. A sua revisão foi maravilhosa. A senhora não tem noção do tanto que me inspira." width="760" height="991" loading="lazy" decoding="async">
+        </button>
+        <figcaption>Nas vagas · Betim</figcaption>
       </figure>
-      <figure class="quote">
-        <span class="chip">Mentoria Anvisa</span>
-        <blockquote>Fui estagiária na Anvisa em 2014 e tudo o que eu desejei era que esse concurso chegasse. Obrigada por fazer não só eu, mas outros farmacêuticos acreditarem que é possível.</blockquote>
-        <figcaption><span class="mono" aria-hidden="true">A</span><cite><b>Aluna da mentoria Anvisa</b>Mensagem antes da prova</cite></figcaption>
+      <figure class="proof art">
+        <button type="button" class="zoom" data-src="img/prints/card-nathalia.webp" aria-label="Ampliar: Residências · UFPR, Sírio-Libanês, USP">
+          <img src="img/prints/card-nathalia.webp" alt="Depoimento de aluna: Com a mentoria consegui me sentir mais confiante e organizar a rotina de estudo. Aprovada nas residências: UFPR 1º lugar na etapa 1 e 2º na etapa 2, Sírio-Libanês 2º, UNISA 3º e USP 14º." width="760" height="975" loading="lazy" decoding="async">
+        </button>
+        <figcaption>Residências · UFPR, Sírio-Libanês, USP</figcaption>
       </figure>
-      <figure class="quote">
-        <span class="chip">Revisão na véspera</span>
-        <blockquote>A questão de excipientes, dióxido de titânio: só lembrei da aula de revisão de ontem da mentoria.</blockquote>
-        <figcaption><span class="mono" aria-hidden="true">A</span><cite><b>Aluna da mentoria</b>No dia da prova</cite></figcaption>
+      <figure class="proof chat">
+        <button type="button" class="zoom" data-src="img/prints/anvisa.webp" aria-label="Ampliar: Mentoria Anvisa">
+          <img src="img/prints/anvisa.webp" alt="Mensagem real de aluna antes da prova: Eu fui estagiária na Anvisa em 2014 e tudo que eu desejei um dia era que esse concurso chegasse, e eu tive o privilégio de estar na mentoria. Obrigada por fazer não só eu, mas outros farmacêuticos acreditarem que é possível." width="760" height="1110" loading="lazy" decoding="async">
+        </button>
+        <figcaption>Mentoria Anvisa</figcaption>
+      </figure>
+      <figure class="proof art">
+        <button type="button" class="zoom" data-src="img/prints/card-rose.webp" aria-label="Ampliar: Foco e planejamento">
+          <img src="img/prints/card-rose.webp" alt="Depoimento de aluna: Eu entrei na mentoria com o pensamento de melhorar meu desempenho nos concursos. Antes eu estava totalmente perdida. Após a mentoria consegui melhorar meu foco, memorização e planejamento. Super indico." width="760" height="778" loading="lazy" decoding="async">
+        </button>
+        <figcaption>Foco e planejamento</figcaption>
+      </figure>
+      <figure class="proof chat">
+        <button type="button" class="zoom" data-src="img/prints/dioxido.webp" aria-label="Ampliar: No dia da prova">
+          <img src="img/prints/dioxido.webp" alt="Mensagem real de aluna no dia da prova: A questão de excipientes, dióxido de titânio, só lembrei da aula de revisão de ontem da mentoria." width="760" height="637" loading="lazy" decoding="async">
+        </button>
+        <figcaption>No dia da prova</figcaption>
       </figure>
     </div>
     <div class="dots" id="dots" role="group" aria-label="Escolher depoimento"></div>
-    <p class="quotes-note">Depoimentos de alunos da mentoria e dos materiais, publicados com autorização. Nomes abreviados para preservar a privacidade.</p>
+    <p class="quotes-note">Mensagens reais de alunos da mentoria e dos materiais, publicadas com autorização. Nomes ocultados para preservar a privacidade.</p>
   </div>
 </section>
+
+<dialog class="lightbox" id="lightbox" aria-label="Mensagem ampliada">
+  <button type="button" class="lb-close" aria-label="Fechar">×</button>
+  <img alt="">
+</dialog>
 
 <!-- ====== PARA QUEM ====== -->
 <section class="sec" aria-labelledby="h-fit">
@@ -783,12 +981,18 @@ p{margin:0}
         <li><span aria-hidden="true">2</span><p>A equipe chama você no WhatsApp para agendar o encontro.</p></li>
         <li><span aria-hidden="true">3</span><p>Você preenche o diagnóstico e a professora estuda o seu caso antes de conversar com você.</p></li>
       </ol>
-      <div class="bonus">
-        <div class="bonus-ic" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B88B1C" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="M8.5 13.8L7 22l5-3 5 3-1.5-8.2"/></svg></div>
-        <div>
-          <h3>Quem faz a sua parte segue com vantagem</h3>
-          <p>Durante os 30 dias de plataforma, o seu rendimento é acompanhado automaticamente. Quem cumpre as metas de estudo recebe um crédito de desconto para seguir na mentoria ou na plataforma.</p>
-        </div>
+      <div class="cashback" id="cashback">
+        <p class="cb-kicker">Bônus por rendimento</p>
+        <h3>Cumpra as metas. Receba de volta.</h3>
+        <ol class="cb-track" aria-label="Os 30 dias de plataforma, semana a semana">
+          <li style="--i:0"><i aria-hidden="true"></i><span><em class="wk-l">Semana</em><em class="wk-s" aria-hidden="true">Sem.</em> 1</span></li>
+          <li style="--i:1"><i aria-hidden="true"></i><span><em class="wk-l">Semana</em><em class="wk-s" aria-hidden="true">Sem.</em> 2</span></li>
+          <li style="--i:2"><i aria-hidden="true"></i><span><em class="wk-l">Semana</em><em class="wk-s" aria-hidden="true">Sem.</em> 3</span></li>
+          <li style="--i:3"><i aria-hidden="true"></i><span><em class="wk-l">Semana</em><em class="wk-s" aria-hidden="true">Sem.</em> 4</span></li>
+          <li class="cb-medal" style="--i:4"><b>Até R$ 200</b><span>de volta em crédito</span></li>
+        </ol>
+        <p class="cb-text">Nos 30 dias de plataforma, a sua meta de estudo é acompanhada automaticamente. Cumpriu? Até R$ 200 do valor da consultoria voltam para você como crédito para seguir na mentoria ou na plataforma.</p>
+        <p class="cb-fine">O valor depende do nível de meta alcançado e do plano escolhido para continuar: até R$ 150 no trimestral e até R$ 200 no semestral. Crédito aplicado na contratação, conforme o Termo de Adesão.</p>
       </div>
     </div>
 
@@ -804,12 +1008,13 @@ p{margin:0}
           <li><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M4.5 10.5l3.5 3.5 7.5-8" fill="none" stroke="#B9679F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Encontro individual online, cerca de 1 hora</li>
           <li><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M4.5 10.5l3.5 3.5 7.5-8" fill="none" stroke="#B9679F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Relatório de direcionamento por escrito</li>
           <li><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M4.5 10.5l3.5 3.5 7.5-8" fill="none" stroke="#B9679F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>30 dias de plataforma APQR com o seu edital</li>
-          <li><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M4.5 10.5l3.5 3.5 7.5-8" fill="none" stroke="#B9679F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Bônus por rendimento para continuar</li>
+          <li><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M4.5 10.5l3.5 3.5 7.5-8" fill="none" stroke="#B9679F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Bônus: até R$ 200 de volta em crédito</li>
         </ul>
         <div class="price">
-          <p class="price-pix-label">10% de desconto no Pix</p>
-          <p class="price-main"><strong><sup>R$</sup>627,30</strong><span>à vista no Pix</span></p>
-          <p class="price-alt">ou 3x de R$ 232,33 sem juros no cartão <span style="color:var(--muted)">(total R$ 697)</span></p>
+          <p class="price-pix-label">Pix ou cartão de crédito</p>
+          <p class="price-main"><strong><sup>R$</sup>597</strong><span>à vista no Pix</span></p>
+          <p class="price-alt">ou em até <b>3x de R$ 199</b> sem juros no cartão</p>
+          <p class="price-back"><span aria-hidden="true"></span>+ até R$ 200 de volta em crédito ao cumprir as metas</p>
         </div>
         <label class="terms" for="aceite">
           <input type="checkbox" id="aceite">
@@ -841,7 +1046,7 @@ p{margin:0}
       <details><summary>E se eu ainda não tenho um edital aberto?<i aria-hidden="true"></i></summary><p>Sem problema. A análise considera o cargo-alvo e o último edital como referência.</p></details>
       <details><summary>O que acontece depois dos 30 dias?<i aria-hidden="true"></i></summary><p>Você mantém o seu relatório. Se quiser continuar, pode seguir na plataforma ou entrar em uma turma da mentoria, e o bônus por rendimento ajuda nessa continuidade. Nada é renovado automaticamente.</p></details>
       <details><summary>A consultoria garante aprovação?<i aria-hidden="true"></i></summary><p>Não, e desconfie de quem garante. O que entregamos é direção, método e acompanhamento. A dedicação continua sendo sua.</p></details>
-      <details><summary>Quais as formas de pagamento?<i aria-hidden="true"></i></summary><p>Pix, com 10% de desconto, ou cartão de crédito em até 3x sem juros.</p></details>
+      <details><summary>Quais as formas de pagamento?<i aria-hidden="true"></i></summary><p>Pix, ou cartão de crédito em até 3x de R$ 199 sem juros. O valor é o mesmo nas duas formas: R$ 597.</p></details>
       <details><summary>Já sou aluno da mentoria. Faz sentido?<i aria-hidden="true"></i></summary><p>Faz, e há uma condição especial para você. <a class="link" href="#" data-link="aluno">Fale com a equipe</a>.</p></details>
     </div>
   </div>
@@ -885,7 +1090,7 @@ p{margin:0}
 
 <!-- barra fixa no celular -->
 <div class="mbar" id="mbar" aria-hidden="true">
-  <p><strong>R$ 627,30</strong>no Pix, ou 3x sem juros</p>
+  <p><strong>R$ 597</strong>Pix ou 3x de R$ 199</p>
   <a class="btn btn-primary" href="#investimento" tabindex="-1" data-ev="cta_mbar">Quero minha consultoria</a>
 </div>
 
@@ -949,14 +1154,14 @@ const CONFIG = {
     aceite.focus({ preventScroll: true });
     termsBox.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
   }));
-  pix.addEventListener("click", () => track("checkout", {value:627.30, payment:"pix"}));
-  card.addEventListener("click", () => track("checkout", {value:697, payment:"cartao"}));
+  pix.addEventListener("click", () => track("checkout", {value:597, payment:"pix"}));
+  card.addEventListener("click", () => track("checkout", {value:597, payment:"cartao"}));
 
   /* ---- rastreamento (só carrega com IDs preenchidos) ---- */
   if (CONFIG.META_PIXEL_ID) {
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");
     fbq("init", CONFIG.META_PIXEL_ID); fbq("track","PageView");
-    fbq("track","ViewContent",{content_name:"Consultoria Individual",value:697,currency:"BRL"});
+    fbq("track","ViewContent",{content_name:"Consultoria Individual",value:597,currency:"BRL"});
   }
   if (CONFIG.GA4_ID) {
     const s = document.createElement("script"); s.async = true; s.src = "https://www.googletagmanager.com/gtag/js?id=" + CONFIG.GA4_ID; document.head.appendChild(s);
@@ -973,7 +1178,10 @@ const CONFIG = {
         window.gtag && gtag("event","generate_lead",{method:"whatsapp"});
       } else if (type === "pricing") {
         window.fbq && fbq("trackCustom","ViewPricing");
-        window.gtag && gtag("event","view_item",{value:697,currency:"BRL",items:[{item_name:"Consultoria Individual"}]});
+        window.gtag && gtag("event","view_item",{value:597,currency:"BRL",items:[{item_name:"Consultoria Individual"}]});
+      } else if (type === "video") {
+        window.fbq && fbq("trackCustom","VideoPlay",{content_name:"Entrevista 1ª colocada Anvisa"});
+        window.gtag && gtag("event","video_start",{video_title:"Entrevista 1ª colocada Anvisa"});
       } else if (type === "faq") {
         window.gtag && gtag("event","select_content",{content_type:"faq",item_id:d.id});
       }
@@ -986,7 +1194,7 @@ const CONFIG = {
   let pastHero = false, atOffer = false;
   const syncBar = () => mbar.classList.toggle("show", pastHero && !atOffer);
   if ("IntersectionObserver" in window) {
-    new IntersectionObserver(([e]) => { pastHero = !e.isIntersecting; top.classList.toggle("scrolled", pastHero); syncBar(); }, {threshold:0}).observe(hero);
+    new IntersectionObserver(([e]) => { pastHero = !e.isIntersecting; top.classList.toggle("scrolled", pastHero); top.classList.toggle("on-dark", !pastHero); syncBar(); }, {threshold:0, rootMargin:"-64px 0px 0px 0px"}).observe(hero);
     let priced = false;
     new IntersectionObserver(([e]) => { atOffer = e.isIntersecting; syncBar(); if (atOffer && !priced){ priced = true; track("pricing"); } }, {threshold:0.15}).observe(offer);
   }
@@ -1032,6 +1240,7 @@ const CONFIG = {
     ticking = false;
     const doc = document.documentElement, max = doc.scrollHeight - innerHeight;
     bar.style.setProperty("--p", max > 0 ? Math.min(1, scrollY / max).toFixed(4) : 0);
+    top.classList.toggle("tinted", scrollY > 8);
     if (!motion) return;
     const r = steps.getBoundingClientRect(), mark = innerHeight * 0.62;
     const f = Math.max(0, Math.min(1, (mark - r.top) / Math.max(1, r.height)));
@@ -1062,14 +1271,14 @@ const CONFIG = {
     const S = SIM_STATES[st];
     sim.dataset.s = st; sim.style.setProperty("--c", S.c);
     $("#sim-state").textContent = S.label; $("#sim-note").textContent = S.note;
-    tabs.forEach(t => t.setAttribute("aria-selected", String(+t.dataset.s === st)));
+    tabs.forEach(t => t.setAttribute("aria-pressed", String(+t.dataset.s === st)));
     cells.forEach((c, k) => { const lv = Math.max(0, Math.min(4, st + offs[k])); c.style.setProperty("--k", lv === 0 && st === 0 ? "#EEE9EF" : COLORS[lv]); });
   };
   let auto = null, userTook = false;
   const stopAuto = () => { if (auto) { clearInterval(auto); auto = null; } };
   tabs.forEach(t => t.addEventListener("click", () => { userTook = true; stopAuto(); setSim(+t.dataset.s); }));
   $(".sim-steps").addEventListener("keydown", e => {
-    const i = tabs.findIndex(t => t.getAttribute("aria-selected") === "true");
+    const i = tabs.findIndex(t => t.getAttribute("aria-pressed") === "true");
     if (e.key === "ArrowRight" || e.key === "ArrowDown") { e.preventDefault(); tabs[Math.min(3, i + 1)].focus(); tabs[Math.min(3, i + 1)].click(); }
     if (e.key === "ArrowLeft" || e.key === "ArrowUp") { e.preventDefault(); tabs[Math.max(0, i - 1)].focus(); tabs[Math.max(0, i - 1)].click(); }
   });
@@ -1095,33 +1304,52 @@ const CONFIG = {
     ioc.observe(count);
   }
 
-  /* depoimentos: faixas no computador, pontos no celular */
-  const quotes = $(".quotes"), figs = $$(".quotes .quote");
-  if (motion && matchMedia("(min-width: 721px)").matches) {
-    const mq = document.createElement("div"); mq.className = "marquee"; mq.setAttribute("aria-hidden", "true");
-    [[0, 1, 2, 3], [4, 5, 6, 7]].forEach((idx, r) => {
-      const row = document.createElement("div"); row.className = "mq-row" + (r ? " rev" : ""); row.style.setProperty("--dur", r ? "80s" : "70s");
-      for (let rep = 0; rep < 2; rep++) idx.forEach(k => row.appendChild(figs[k].cloneNode(true)));
-      mq.appendChild(row);
-    });
-    quotes.after(mq);
-    quotes.classList.add("sr-only"); quotes.removeAttribute("tabindex"); // o original continua para leitores de tela
-  }
-  const dots = $("#dots");
+  /* depoimentos: pontos no celular + ampliar */
+  const proofs = $("#proofs"), figs = $$("#proofs .proof"), dots = $("#dots");
   if (dots && figs.length) {
     figs.forEach((f, k) => {
-      const b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-label", "Depoimento " + (k + 1));
-      b.addEventListener("click", () => quotes.scrollTo({ left: f.offsetLeft - quotes.offsetLeft - (quotes.clientWidth - f.clientWidth) / 2, behavior: reduce ? "auto" : "smooth" }));
+      const b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-label", "Mensagem " + (k + 1));
+      b.addEventListener("click", () => proofs.scrollTo({ left: f.offsetLeft - proofs.offsetLeft - (proofs.clientWidth - f.clientWidth) / 2, behavior: reduce ? "auto" : "smooth" }));
       dots.appendChild(b);
     });
     const db = $$("button", dots);
     const syncDots = () => {
-      const c = quotes.scrollLeft + quotes.clientWidth / 2; let best = 0, bd = Infinity;
-      figs.forEach((f, k) => { const m = f.offsetLeft - quotes.offsetLeft + f.clientWidth / 2, d = Math.abs(m - c); if (d < bd) { bd = d; best = k; } });
+      const c = proofs.scrollLeft + proofs.clientWidth / 2; let best = 0, bd = Infinity;
+      figs.forEach((f, k) => { const m = f.offsetLeft - proofs.offsetLeft + f.clientWidth / 2, d = Math.abs(m - c); if (d < bd) { bd = d; best = k; } });
       db.forEach((b, k) => b.setAttribute("aria-current", String(k === best)));
     };
-    quotes.addEventListener("scroll", () => raf(syncDots), { passive: true }); syncDots();
+    proofs.addEventListener("scroll", () => raf(syncDots), { passive: true }); syncDots();
   }
+  const lb = $("#lightbox");
+  if (lb && lb.showModal) {
+    const lbImg = $("img", lb);
+    $$(".zoom").forEach(z => z.addEventListener("click", () => { lbImg.src = z.dataset.src; lbImg.alt = $("img", z).alt; lb.showModal(); }));
+    $(".lb-close", lb).addEventListener("click", () => lb.close());
+    lb.addEventListener("click", e => { if (e.target === lb) lb.close(); });
+  } else $$(".zoom").forEach(z => z.addEventListener("click", () => window.open(z.dataset.src, "_blank", "noopener")));
+
+  /* vídeo: só carrega o YouTube ao tocar (modo sem cookies) */
+  const vbtn = $(".video-btn");
+  if (vbtn) vbtn.addEventListener("click", () => {
+    const f = document.createElement("iframe");
+    f.src = "https://www.youtube-nocookie.com/embed/" + vbtn.dataset.id + "?autoplay=1&rel=0&modestbranding=1";
+    f.title = "Entrevista com a 1ª colocada da Anvisa"; f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen"; f.allowFullscreen = true;
+    vbtn.replaceWith(f);
+    track("video");
+  });
+
+  /* palco do hero: profundidade leve com o mouse (só computador) */
+  const stage = $("#stage");
+  if (motion && stage && matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    const fl = $$(".float", stage); let tx = 0, ty = 0, cx = 0, cy = 0, on = false;
+    const tick = () => { cx += (tx - cx) * 0.08; cy += (ty - cy) * 0.08; fl.forEach(el => { const d = +el.dataset.depth || 10; el.style.translate = (cx * d).toFixed(2) + "px " + (cy * d).toFixed(2) + "px"; }); if (Math.abs(tx - cx) + Math.abs(ty - cy) > 0.001) raf(tick); else on = false; };
+    $(".hero").addEventListener("pointermove", e => { const r = stage.getBoundingClientRect(); tx = (e.clientX - r.left) / r.width - 0.5; ty = (e.clientY - r.top) / r.height - 0.5; if (!on) { on = true; raf(tick); } });
+    $(".hero").addEventListener("pointerleave", () => { tx = 0; ty = 0; if (!on) { on = true; raf(tick); } });
+  }
+
+  /* trilha do bônus acende ao aparecer */
+  const cb = $("#cashback");
+  if (cb) { if (motion && "IntersectionObserver" in window) { const iob = new IntersectionObserver(([e]) => { if (e.isIntersecting) { cb.classList.add("in"); iob.disconnect(); } }, { threshold: 0.5 }); iob.observe(cb); } else cb.classList.add("in"); }
 
   /* ---- mapa do edital ---- */
   const LABELS = ["Não iniciado","Assimilação","Material pronto","Questões e revisão","Consolidado"];

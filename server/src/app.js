@@ -20,17 +20,18 @@ import { financeRouter, webhookRouter } from './routes/finance.js';
  * Páginas de venda estáticas da Prof. Pollyana (ex.: /consultoria), servidas do web/dist/<pasta>.
  * Ficam fora do app React: HTML próprio, sem login e sem acesso à API.
  * Política de segurança própria: liberam Google Fonts, o script da própria página e
- * Meta Pixel / Google Analytics (carregados só quando os IDs estiverem preenchidos na página).
+ * Meta Pixel / Google Analytics (carregados só quando os IDs estiverem preenchidos na página)
+ * e o player do YouTube em modo sem cookies (só carrega quando a pessoa toca no vídeo).
  */
 export const LANDING_PAGES = ['consultoria'];
 export const LANDING_CSP =
   "default-src 'self'; " +
-  "img-src 'self' data: https://www.facebook.com https://*.google-analytics.com https://*.googletagmanager.com; " +
+  "img-src 'self' data: https://i.ytimg.com https://www.facebook.com https://*.google-analytics.com https://*.googletagmanager.com; " +
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
   "font-src 'self' https://fonts.gstatic.com; " +
   "script-src 'self' 'unsafe-inline' https://connect.facebook.net https://www.googletagmanager.com; " +
   "connect-src 'self' https://www.facebook.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; " +
-  "frame-src 'none'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'";
+  "frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'";
 
 function mountLandingPages(app, dist) {
   for (const name of LANDING_PAGES) {
